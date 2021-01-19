@@ -5,7 +5,7 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  border: 1px solid #F1F1F1;
+  border: 1px solid #f1f1f1;
   min-width: 100px;
   max-height: 150px;
   overflow: auto;
@@ -17,5 +17,5 @@
   border-bottom: 1px solid #f1f1f1;
 }
 .rdw-suggestion-option-active {
-  background-color: #F1F1F1;
+  background-color: #f1f1f1;
 }

@@ -1,29 +1,29 @@
-import React from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
-import "./styles.css";
+import './styles.css';
+
+import React from 'react';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
 class Hashtag {
-
   constructor(config) {
     this.className = config.className;
-    this.hashCharacter = config.hashCharacter || "#";
-    this.separator = config.separator || " ";
+    this.hashCharacter = config.hashCharacter || '#';
+    this.separator = config.separator || ' ';
   }
 
   getHashtagComponent = () => {
     const className = this.className;
 
-    const HashtagComponent = ({
-      children
-    }) => {
+    const HashtagComponent = ({ children }) => {
       const text = children[0].props.text;
-      return <a href={text} className={classNames("rdw-hashtag-link", className)}>
+      return (
+        <a href={text} className={classNames('rdw-hashtag-link', className)}>
           {children}
-        </a>;
+        </a>
+      );
     };
     HashtagComponent.propTypes = {
-      children: PropTypes.object
+      children: PropTypes.object,
     };
     return HashtagComponent;
   };
@@ -33,7 +33,7 @@ class Hashtag {
     let startIndex = 0;
     let counter = 0;
 
-    for (; text.length > 0 && startIndex >= 0;) {
+    for (; text.length > 0 && startIndex >= 0; ) {
       if (text[0] === this.hashCharacter) {
         startIndex = 0;
         counter = 0;
@@ -46,7 +46,8 @@ class Hashtag {
         }
       }
       if (startIndex >= 0) {
-        const endIndex = text.indexOf(this.separator) >= 0 ? text.indexOf(this.separator) : text.length;
+        const endIndex =
+          text.indexOf(this.separator) >= 0 ? text.indexOf(this.separator) : text.length;
         const hashtagText = text.substr(0, endIndex);
         if (hashtagText && hashtagText.length > 0) {
           callback(counter, counter + hashtagText.length + this.hashCharacter.length);
@@ -58,7 +59,7 @@ class Hashtag {
 
   getHashtagDecorator = () => ({
     strategy: this.findHashtagEntities,
-    component: this.getHashtagComponent()
+    component: this.getHashtagComponent(),
   });
 }
 

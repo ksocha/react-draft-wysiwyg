@@ -1,12 +1,10 @@
+import './styles.css';
 
-
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
-import "./styles.css";
+import React, { Component } from 'react';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
 export default class DropDownOption extends Component {
-
   static propTypes = {
     children: PropTypes.any,
     value: PropTypes.any,
@@ -21,22 +19,17 @@ export default class DropDownOption extends Component {
     activeClassName: PropTypes.string,
     disabledClassName: PropTypes.string,
     highlightedClassName: PropTypes.string,
-    title: PropTypes.string
+    title: PropTypes.string,
   };
 
   static defaultProps = {
     activeClassName: '',
     disabledClassName: '',
-    highlightedClassName: ''
+    highlightedClassName: '',
   };
 
   onClick: (...args: Array<any>) => any = (event): void => {
-    const {
-      onSelect,
-      onClick,
-      value,
-      disabled
-    } = this.props;
+    const { onSelect, onClick, value, disabled } = this.props;
     if (!disabled) {
       if (onSelect) {
         onSelect(value);
@@ -49,17 +42,12 @@ export default class DropDownOption extends Component {
   };
 
   setHighlighted: (...args: Array<any>) => any = (): void => {
-    const {
-      setHighlighted,
-      index
-    } = this.props;
+    const { setHighlighted, index } = this.props;
     setHighlighted(index);
   };
 
   resetHighlighted: (...args: Array<any>) => any = (): void => {
-    const {
-      setHighlighted
-    } = this.props;
+    const { setHighlighted } = this.props;
     setHighlighted(-1);
   };
 
@@ -75,14 +63,23 @@ export default class DropDownOption extends Component {
       activeClassName,
       disabledClassName,
       highlightedClassName,
-      title
+      title,
     } = this.props;
-    return <li className={classNames('rdw-dropdownoption-default', className, { [`rdw-dropdownoption-active ${activeClassName}`]: active,
-      [`rdw-dropdownoption-highlighted ${highlightedClassName}`]: highlighted,
-      [`rdw-dropdownoption-disabled ${disabledClassName}`]: disabled
-    })} onMouseEnter={this.setHighlighted} onMouseLeave={this.resetHighlighted} onClick={this.onClick} title={title}>
+    return (
+      <li
+        className={classNames('rdw-dropdownoption-default', className, {
+          [`rdw-dropdownoption-active ${activeClassName}`]: active,
+          [`rdw-dropdownoption-highlighted ${highlightedClassName}`]: highlighted,
+          [`rdw-dropdownoption-disabled ${disabledClassName}`]: disabled,
+        })}
+        onMouseEnter={this.setHighlighted}
+        onMouseLeave={this.resetHighlighted}
+        onClick={this.onClick}
+        title={title}
+      >
         {children}
-      </li>;
+      </li>
+    );
   }
 }
 // todo: review classname use above.

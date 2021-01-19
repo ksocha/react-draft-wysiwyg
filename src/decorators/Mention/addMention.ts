@@ -1,14 +1,20 @@
-import { EditorState, Modifier } from "draft-js";
-import { getSelectedBlock } from "draftjs-utils";
+import { EditorState, Modifier } from 'draft-js';
+import { getSelectedBlock } from 'draftjs-utils';
 
-export default function addMention(editorState: EditorState, onChange: (...args: Array<any>) => any, separator: string, trigger: string, suggestion: {
-  [key: string]: any;
-}): void {
-  const {
-    value,
-    url
-  } = suggestion;
-  const entityKey = editorState.getCurrentContent().createEntity('MENTION', 'IMMUTABLE', { text: `${trigger}${value}`, value, url }).getLastCreatedEntityKey();
+export default function addMention(
+  editorState: EditorState,
+  onChange: (...args: Array<any>) => any,
+  separator: string,
+  trigger: string,
+  suggestion: {
+    [key: string]: any;
+  }
+): void {
+  const { value, url } = suggestion;
+  const entityKey = editorState
+    .getCurrentContent()
+    .createEntity('MENTION', 'IMMUTABLE', { text: `${trigger}${value}`, value, url })
+    .getLastCreatedEntityKey();
   const selectedBlock = getSelectedBlock(editorState);
   const selectedBlockText = selectedBlock.getText();
   let focusOffset = editorState.getSelection().focusOffset;
@@ -22,20 +28,32 @@ export default function addMention(editorState: EditorState, onChange: (...args:
   }
   let updatedSelection = editorState.getSelection().merge({
     anchorOffset: mentionIndex,
-    focusOffset
+    focusOffset,
   });
   let newEditorState = EditorState.acceptSelection(editorState, updatedSelection);
-  let contentState = Modifier.replaceText(newEditorState.getCurrentContent(), updatedSelection, `${trigger}${value}`, newEditorState.getCurrentInlineStyle(), entityKey);
+  let contentState = Modifier.replaceText(
+    newEditorState.getCurrentContent(),
+    updatedSelection,
+    `${trigger}${value}`,
+    newEditorState.getCurrentInlineStyle(),
+    entityKey
+  );
   newEditorState = EditorState.push(newEditorState, contentState, 'insert-characters');
 
   if (!spaceAlreadyPresent) {
     // insert a blank space after mention
     updatedSelection = newEditorState.getSelection().merge({
       anchorOffset: mentionIndex + value.length + trigger.length,
-      focusOffset: mentionIndex + value.length + trigger.length
+      focusOffset: mentionIndex + value.length + trigger.length,
     });
     newEditorState = EditorState.acceptSelection(newEditorState, updatedSelection);
-    contentState = Modifier.insertText(newEditorState.getCurrentContent(), updatedSelection, ' ', newEditorState.getCurrentInlineStyle(), undefined);
+    contentState = Modifier.insertText(
+      newEditorState.getCurrentContent(),
+      updatedSelection,
+      ' ',
+      newEditorState.getCurrentInlineStyle(),
+      undefined
+    );
   }
   onChange(EditorState.push(newEditorState, contentState, 'insert-characters'));
 }

@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
-import "./styles.css";
+import './styles.css';
 
-import { stopPropagation } from "../../../utils/common";
+import React, { Component } from 'react';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+
+import { stopPropagation } from '../../../utils/common';
 
 export default class Dropdown extends Component {
-
   static propTypes = {
     children: PropTypes.any,
     onChange: PropTypes.func,
@@ -17,28 +17,24 @@ export default class Dropdown extends Component {
     onExpandEvent: PropTypes.func,
     optionWrapperClassName: PropTypes.string,
     ariaLabel: PropTypes.string,
-    title: PropTypes.string
+    title: PropTypes.string,
   };
 
   state = {
-    highlighted: -1
+    highlighted: -1,
   };
 
   componentDidUpdate(prevProps) {
-    const {
-      expanded
-    } = this.props;
+    const { expanded } = this.props;
     if (prevProps.expanded && !expanded) {
       this.setState({
-        highlighted: -1
+        highlighted: -1,
       });
     }
   }
 
   onChange = value => {
-    const {
-      onChange
-    } = this.props;
+    const { onChange } = this.props;
     if (onChange) {
       onChange(value);
     }
@@ -47,16 +43,12 @@ export default class Dropdown extends Component {
 
   setHighlighted = highlighted => {
     this.setState({
-      highlighted
+      highlighted,
     });
   };
 
   toggleExpansion = () => {
-    const {
-      doExpand,
-      doCollapse,
-      expanded
-    } = this.props;
+    const { doExpand, doCollapse, expanded } = this.props;
     if (expanded) {
       doCollapse();
     } else {
@@ -72,31 +64,44 @@ export default class Dropdown extends Component {
       optionWrapperClassName,
       ariaLabel,
       onExpandEvent,
-      title
+      title,
     } = this.props;
-    const {
-      highlighted
-    } = this.state;
+    const { highlighted } = this.state;
     const options = children.slice(1, children.length);
-    return <div className={classNames('rdw-dropdown-wrapper', className)} aria-expanded={expanded} aria-label={ariaLabel || 'rdw-dropdown'}>
+    return (
+      <div
+        className={classNames('rdw-dropdown-wrapper', className)}
+        aria-expanded={expanded}
+        aria-label={ariaLabel || 'rdw-dropdown'}
+      >
         <a className="rdw-dropdown-selectedtext" onClick={onExpandEvent} title={title}>
           {children[0]}
-          <div className={classNames({
-          'rdw-dropdown-carettoclose': expanded,
-          'rdw-dropdown-carettoopen': !expanded
-        })} />
+          <div
+            className={classNames({
+              'rdw-dropdown-carettoclose': expanded,
+              'rdw-dropdown-carettoopen': !expanded,
+            })}
+          />
         </a>
-        {expanded ? <ul className={classNames('rdw-dropdown-optionwrapper', optionWrapperClassName)} onClick={stopPropagation}>
+        {expanded ? (
+          <ul
+            className={classNames('rdw-dropdown-optionwrapper', optionWrapperClassName)}
+            onClick={stopPropagation}
+          >
             {React.Children.map(options, (option, index) => {
-          const temp = option && React.cloneElement(option, {
-            onSelect: this.onChange,
-            highlighted: highlighted === index,
-            setHighlighted: this.setHighlighted,
-            index
-          });
-          return temp;
-        })}
-          </ul> : undefined}
-      </div>;
+              const temp =
+                option &&
+                React.cloneElement(option, {
+                  onSelect: this.onChange,
+                  highlighted: highlighted === index,
+                  setHighlighted: this.setHighlighted,
+                  index,
+                });
+              return temp;
+            })}
+          </ul>
+        ) : undefined}
+      </div>
+    );
   }
 }

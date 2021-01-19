@@ -1,16 +1,16 @@
-import inline from "./Inline";
-import blockType from "./BlockType";
-import fontSize from "./FontSize";
-import fontFamily from "./FontFamily";
-import list from "./List";
-import textAlign from "./TextAlign";
-import colorPicker from "./ColorPicker";
-import link from "./Link";
-import embedded from "./Embedded";
-import emoji from "./Emoji";
-import image from "./Image";
-import remove from "./Remove";
-import history from "./History";
+import blockType from './BlockType';
+import colorPicker from './ColorPicker';
+import embedded from './Embedded';
+import emoji from './Emoji';
+import fontFamily from './FontFamily';
+import fontSize from './FontSize';
+import history from './History';
+import image from './Image';
+import inline from './Inline';
+import link from './Link';
+import list from './List';
+import remove from './Remove';
+import textAlign from './TextAlign';
 
 export default {
   inline,
@@ -25,5 +25,5 @@ export default {
   emoji,
   image,
   remove,
-  history
+  history,
 };

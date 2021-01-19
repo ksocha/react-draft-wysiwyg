@@ -1,13 +1,10 @@
 export default class ModalHandler {
-
   callBacks = [];
   suggestionCallback = undefined;
   editorFlag = false;
   suggestionFlag = false;
 
-  closeAllModals = (event: {
-    [key: string]: any;
-  }) => {
+  closeAllModals = (event: { [key: string]: any }) => {
     this.callBacks.forEach(callBack => {
       callBack(event);
     });
@@ -21,7 +18,8 @@ export default class ModalHandler {
       });
     }
     if (document) {
-      document.addEventListener('click', () => {// eslint-disable-line no-undef
+      document.addEventListener('click', () => {
+        // eslint-disable-line no-undef
         if (!this.editorFlag) {
           this.closeAllModals();
           if (this.suggestionCallback) {
@@ -31,7 +29,8 @@ export default class ModalHandler {
           this.editorFlag = false;
         }
       });
-      document.addEventListener('keydown', event => {// eslint-disable-line no-undef
+      document.addEventListener('keydown', event => {
+        // eslint-disable-line no-undef
         if (event.key === 'Escape') {
           this.closeAllModals();
         }
@@ -48,9 +47,7 @@ export default class ModalHandler {
     }
   };
 
-  closeModals = (event: {
-    [key: string]: any;
-  }): void => {
+  closeModals = (event: { [key: string]: any }): void => {
     this.closeAllModals(event);
   };
 

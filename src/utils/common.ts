@@ -1,13 +1,15 @@
-
-
 /**
-* Utility function to execute callback for eack key->value pair.
-*/
-export function forEach(obj: {
-  [key: string]: any;
-}, callback: (...args: Array<any>) => any) {
+ * Utility function to execute callback for eack key->value pair.
+ */
+export function forEach(
+  obj: {
+    [key: string]: any;
+  },
+  callback: (...args: Array<any>) => any
+) {
   if (obj) {
-    for (const key in obj) {// eslint-disable-line no-restricted-syntax
+    for (const key in obj) {
+      // eslint-disable-line no-restricted-syntax
       if ({}.hasOwnProperty.call(obj, key)) {
         callback(key, obj[key]);
       }
@@ -15,12 +17,16 @@ export function forEach(obj: {
   }
 }
 
-export function hasProperty(obj: {
-  [key: string]: any;
-}, property: string) {
+export function hasProperty(
+  obj: {
+    [key: string]: any;
+  },
+  property: string
+) {
   let result = false;
   if (obj) {
-    for (const key in obj) {// eslint-disable-line no-restricted-syntax
+    for (const key in obj) {
+      // eslint-disable-line no-restricted-syntax
       if ({}.hasOwnProperty.call(obj, key) && property === key) {
         result = true;
         break;
@@ -31,23 +37,23 @@ export function hasProperty(obj: {
 }
 
 /**
-* The function returns true if the string passed to it has no content.
-*/
+ * The function returns true if the string passed to it has no content.
+ */
 export function isEmptyString(str: string): boolean {
   return !str || !str.trim();
 }
 
 /**
-* The function will return true for simple javascript object,
-* which is not any other built in type like Array.
-*/
+ * The function will return true for simple javascript object,
+ * which is not any other built in type like Array.
+ */
 export function isMap(obj) {
   return Object.prototype.toString.call(obj) === '[object Object]';
 }
 
 /**
-* The function will return filter out props fron and return new props.
-*/
+ * The function will return filter out props fron and return new props.
+ */
 export function filter(obj, keys) {
   const filteredKeys = Object.keys(obj).filter(key => keys.indexOf(key) < 0);
   const filteredObject = {};

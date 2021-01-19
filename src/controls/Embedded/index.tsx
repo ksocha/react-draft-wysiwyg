@@ -1,34 +1,29 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { AtomicBlockUtils } from "draft-js";
+import React, { Component } from 'react';
+import { AtomicBlockUtils } from 'draft-js';
+import PropTypes from 'prop-types';
 
-import LayoutComponent from "./Component";
+import LayoutComponent from './Component';
 
 class Embedded extends Component {
-
   static propTypes = {
     editorState: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     modalHandler: PropTypes.object,
     config: PropTypes.object,
-    translations: PropTypes.object
+    translations: PropTypes.object,
   };
 
   state = {
-    expanded: false
+    expanded: false,
   };
 
   componentDidMount() {
-    const {
-      modalHandler
-    } = this.props;
+    const { modalHandler } = this.props;
     modalHandler.registerCallBack(this.expandCollapse);
   }
 
   componentWillUnmount() {
-    const {
-      modalHandler
-    } = this.props;
+    const { modalHandler } = this.props;
     modalHandler.deregisterCallBack(this.expandCollapse);
   }
 
@@ -38,20 +33,20 @@ class Embedded extends Component {
 
   expandCollapse = () => {
     this.setState({
-      expanded: this.signalExpanded
+      expanded: this.signalExpanded,
     });
     this.signalExpanded = false;
   };
 
   doExpand = () => {
     this.setState({
-      expanded: true
+      expanded: true,
     });
   };
 
   doCollapse = () => {
     this.setState({
-      expanded: false
+      expanded: false,
     });
   };
 
@@ -59,27 +54,33 @@ class Embedded extends Component {
     const {
       editorState,
       onChange,
-      config: {
-        embedCallback
-      }
+      config: { embedCallback },
     } = this.props;
     const src = embedCallback ? embedCallback(embeddedLink) : embeddedLink;
-    const entityKey = editorState.getCurrentContent().createEntity('EMBEDDED_LINK', 'MUTABLE', { src, height, width }).getLastCreatedEntityKey();
+    const entityKey = editorState
+      .getCurrentContent()
+      .createEntity('EMBEDDED_LINK', 'MUTABLE', { src, height, width })
+      .getLastCreatedEntityKey();
     const newEditorState = AtomicBlockUtils.insertAtomicBlock(editorState, entityKey, ' ');
     onChange(newEditorState);
     this.doCollapse();
   };
 
   render() {
-    const {
-      config,
-      translations
-    } = this.props;
-    const {
-      expanded
-    } = this.state;
+    const { config, translations } = this.props;
+    const { expanded } = this.state;
     const EmbeddedComponent = config.component || LayoutComponent;
-    return <EmbeddedComponent config={config} translations={translations} onChange={this.addEmbeddedLink} expanded={expanded} onExpandEvent={this.onExpandEvent} doExpand={this.doExpand} doCollapse={this.doCollapse} />;
+    return (
+      <EmbeddedComponent
+        config={config}
+        translations={translations}
+        onChange={this.addEmbeddedLink}
+        expanded={expanded}
+        onExpandEvent={this.onExpandEvent}
+        doExpand={this.doExpand}
+        doCollapse={this.doCollapse}
+      />
+    );
   }
 }
 

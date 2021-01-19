@@ -1,5 +1,4 @@
 export default class FocusHandler {
-
   inputFocused = false;
   editorMouseDown = false;
 
@@ -12,10 +11,20 @@ export default class FocusHandler {
   };
 
   isEditorBlur = (event): void => {
-    if ((event.target.tagName === 'INPUT' || event.target.tagName === 'LABEL' || event.target.tagName === 'TEXTAREA') && !this.editorFocused) {
+    if (
+      (event.target.tagName === 'INPUT' ||
+        event.target.tagName === 'LABEL' ||
+        event.target.tagName === 'TEXTAREA') &&
+      !this.editorFocused
+    ) {
       this.inputFocused = false;
       return true;
-    } else if ((event.target.tagName !== 'INPUT' || event.target.tagName !== 'LABEL' || event.target.tagName !== 'TEXTAREA') && !this.inputFocused) {
+    } else if (
+      (event.target.tagName !== 'INPUT' ||
+        event.target.tagName !== 'LABEL' ||
+        event.target.tagName !== 'TEXTAREA') &&
+      !this.inputFocused
+    ) {
       this.editorFocused = false;
       return true;
     }

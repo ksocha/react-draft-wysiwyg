@@ -9,5 +9,5 @@ export default {
     suggestionDropdownOpen = false;
   },
 
-  isOpen: () => suggestionDropdownOpen
+  isOpen: () => suggestionDropdownOpen,
 };

@@ -1,6 +1,4 @@
-
-
-import { forEach, isMap } from "./common";
+import { forEach, isMap } from './common';
 
 /**
  * This function is used when displaying options in drop-down.

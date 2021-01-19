@@ -3,7 +3,7 @@
   align-items: center;
   margin-bottom: 6px;
   position: relative;
-  flex-wrap: wrap
+  flex-wrap: wrap;
 }
 .rdw-colorpicker-modal {
   position: absolute;
@@ -13,12 +13,12 @@
   flex-direction: column;
   width: 175px;
   height: 175px;
-  border: 1px solid #F1F1F1;
+  border: 1px solid #f1f1f1;
   padding: 15px;
   border-radius: 2px;
   z-index: 100;
   background: white;
-  box-shadow: 3px 3px 5px #BFBDBD;
+  box-shadow: 3px 3px 5px #bfbdbd;
 }
 .rdw-colorpicker-modal-header {
   display: flex;
@@ -45,7 +45,7 @@
 .rdw-colorpicker-cube {
   width: 22px;
   height: 22px;
-  border: 1px solid #F1F1F1;
+  border: 1px solid #f1f1f1;
 }
 .rdw-colorpicker-option {
   margin: 3px;
@@ -55,14 +55,14 @@
   width: 22px;
   height: 22px;
   min-width: 22px;
-  box-shadow: 1px 2px 1px #BFBDBD inset;
+  box-shadow: 1px 2px 1px #bfbdbd inset;
 }
 .rdw-colorpicker-option:hover {
-  box-shadow: 1px 2px 1px #BFBDBD;
+  box-shadow: 1px 2px 1px #bfbdbd;
 }
 .rdw-colorpicker-option:active {
-  box-shadow: -1px -2px 1px #BFBDBD;
+  box-shadow: -1px -2px 1px #bfbdbd;
 }
 .rdw-colorpicker-option-active {
-  box-shadow: 0px 0px 2px 2px #BFBDBD;
+  box-shadow: 0px 0px 2px 2px #bfbdbd;
 }

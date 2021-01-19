@@ -3,7 +3,7 @@
   align-items: center;
   margin-bottom: 6px;
   position: relative;
-  flex-wrap: wrap
+  flex-wrap: wrap;
 }
 .rdw-image-modal {
   position: absolute;
@@ -12,12 +12,12 @@
   display: flex;
   flex-direction: column;
   width: 235px;
-  border: 1px solid #F1F1F1;
+  border: 1px solid #f1f1f1;
   padding: 15px;
   border-radius: 2px;
   z-index: 100;
   background: white;
-  box-shadow: 3px 3px 5px #BFBDBD;
+  box-shadow: 3px 3px 5px #bfbdbd;
 }
 .rdw-image-modal-header {
   font-size: 15px;
@@ -39,7 +39,7 @@
   margin-top: 5px;
 }
 .rdw-image-modal-header-label-highlighted {
-  background: #6EB8D4;
+  background: #6eb8d4;
   border-bottom: 2px solid #0a66b7;
 }
 .rdw-image-modal-upload-option {
@@ -69,7 +69,7 @@
   align-items: center;
   padding: 15px;
 }
-.rdw-image-modal-upload-option-label span{
+.rdw-image-modal-upload-option-label span {
   padding: 0 20px;
 }
 .rdw-image-modal-upload-option-image-preview {
@@ -77,12 +77,12 @@
   max-height: 200px;
 }
 .rdw-image-modal-upload-option-input {
-	width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
-	overflow: hidden;
-	position: absolute;
-	z-index: -1;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
 }
 .rdw-image-modal-url-section {
   display: flex;
@@ -92,7 +92,7 @@
   width: 90%;
   height: 35px;
   margin: 15px 0 12px;
-  border: 1px solid #F1F1F1;
+  border: 1px solid #f1f1f1;
   border-radius: 2px;
   font-size: 15px;
   padding: 0 5px;
@@ -107,17 +107,17 @@
   margin: 0 5px;
   width: 75px;
   height: 30px;
-  border: 1px solid #F1F1F1;
+  border: 1px solid #f1f1f1;
   border-radius: 2px;
   cursor: pointer;
   background: white;
   text-transform: capitalize;
 }
 .rdw-image-modal-btn:hover {
-  box-shadow: 1px 1px 0px #BFBDBD;
+  box-shadow: 1px 1px 0px #bfbdbd;
 }
 .rdw-image-modal-btn:active {
-  box-shadow: 1px 1px 0px #BFBDBD inset;
+  box-shadow: 1px 1px 0px #bfbdbd inset;
 }
 .rdw-image-modal-btn:focus {
   outline: none !important;
@@ -136,7 +136,7 @@
 .rdw-image-modal-alt-input {
   width: 70%;
   height: 20px;
-  border: 1px solid #F1F1F1;
+  border: 1px solid #f1f1f1;
   border-radius: 2px;
   font-size: 12px;
   margin-left: 5px;
@@ -156,7 +156,7 @@
 .rdw-image-modal-size-input {
   width: 40%;
   height: 20px;
-  border: 1px solid #F1F1F1;
+  border: 1px solid #f1f1f1;
   border-radius: 2px;
   font-size: 12px;
 }
