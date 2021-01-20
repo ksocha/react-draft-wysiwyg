@@ -4,7 +4,7 @@ import { getEntityRange, getSelectionEntity, getSelectionText } from 'draftjs-ut
 import linkifyIt from 'linkify-it';
 import PropTypes from 'prop-types';
 
-import LayoutComponent from './Component';
+import { LinkComponent } from './Component';
 
 const linkify = linkifyIt();
 const linkifyLink = params => {
@@ -187,7 +187,7 @@ class Link extends Component {
     const { config, translations } = this.props;
     const { expanded } = this.state;
     const { link, selectionText } = this.getCurrentValues();
-    const LinkComponent = config.component || LayoutComponent;
+
     return (
       <LinkComponent
         config={config}
