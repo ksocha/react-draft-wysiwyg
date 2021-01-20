@@ -4,9 +4,9 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 
 interface Props {
-  onClick: (value: string) => void;
+  onClick: (value?: string) => void;
   children: React.ReactNode;
-  value: string;
+  value?: string;
   className?: string;
   activeClassName?: string;
   active?: boolean;

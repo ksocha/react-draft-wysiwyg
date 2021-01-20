@@ -69,7 +69,7 @@ export default function Inline({ onChange, editorState }: Props) {
       </Option>
 
       <Option
-        value={InlineStyle.Italic}
+        value={InlineStyle.Underline}
         onClick={toggleInlineStyle}
         active={currentStyles[InlineStyle.Underline]}
         title={intl.formatMessage({ id: 'wysiwygEditor.inline.underline' })}

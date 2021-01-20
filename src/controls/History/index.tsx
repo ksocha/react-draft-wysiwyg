@@ -31,7 +31,6 @@ export default function History({ editorState, onChange }: Props) {
   return (
     <div className="rdw-history-wrapper" aria-label="rdw-history-control">
       <Option
-        value="undo"
         onClick={handleUndo}
         disabled={undoDisabled}
         title={intl.formatMessage({ id: 'wysiwygEditor.history.undo' })}
@@ -40,7 +39,6 @@ export default function History({ editorState, onChange }: Props) {
       </Option>
 
       <Option
-        value="redo"
         onClick={handleRedo}
         disabled={redoDisabled}
         title={intl.formatMessage({ id: 'wysiwygEditor.history.redo' })}

@@ -42,8 +42,8 @@ declare module 'draftjs-utils' {
   export function changeDepth(editorState: EditorState, adjustment, maxDepth): EditorState;
   export function getSelectionCustomInlineStyle(
     editorState: EditorState,
-    styles: []
-  ): Record<string, unknown>;
+    styles: string[]
+  ): Record<string, string>;
   export function toggleCustomInlineStyle(
     editorState: EditorState,
     styleType: string,

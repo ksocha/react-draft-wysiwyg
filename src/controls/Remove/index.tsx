@@ -1,106 +1,55 @@
-import React, { Component } from 'react';
+import React, { useCallback } from 'react';
+import { useIntl } from 'react-intl';
 import { EditorState, Modifier } from 'draft-js';
 import { getSelectionCustomInlineStyle } from 'draftjs-utils';
-import PropTypes from 'prop-types';
 
+import eraserIcon from '../../../images/eraser.svg';
+import Option from '../../components/Option';
 import { forEach } from '../../utils/common';
-import LayoutComponent from './Component';
 
-export default class Remove extends Component {
-  static propTypes = {
-    onChange: PropTypes.func.isRequired,
-    editorState: PropTypes.object.isRequired,
-    config: PropTypes.object,
-    translations: PropTypes.object,
-    modalHandler: PropTypes.object,
-  };
+interface Props {
+  onChange: (editorState: EditorState) => void;
+  editorState: EditorState;
+}
 
-  state = {
-    expanded: false,
-  };
+export default function Remove({ onChange, editorState }: Props) {
+  const intl = useIntl();
 
-  componentDidMount() {
-    const { modalHandler } = this.props;
-    modalHandler.registerCallBack(this.expandCollapse);
-  }
-
-  componentWillUnmount() {
-    const { modalHandler } = this.props;
-    modalHandler.deregisterCallBack(this.expandCollapse);
-  }
-
-  onExpandEvent = () => {
-    this.signalExpanded = !this.state.expanded;
-  };
-
-  expandCollapse = () => {
-    this.setState({
-      expanded: this.signalExpanded,
-    });
-    this.signalExpanded = false;
-  };
-
-  removeInlineStyles = () => {
-    const { editorState, onChange } = this.props;
-    onChange(this.removeAllInlineStyles(editorState));
-  };
-
-  removeAllInlineStyles = editorState => {
+  const removeInlineStyles = useCallback(() => {
     let contentState = editorState.getCurrentContent();
-    [
-      'BOLD',
-      'ITALIC',
-      'UNDERLINE',
-      'STRIKETHROUGH',
-      'MONOSPACE',
-      'SUPERSCRIPT',
-      'SUBSCRIPT',
-    ].forEach(style => {
-      contentState = Modifier.removeInlineStyle(contentState, editorState.getSelection(), style);
-    });
+
+    ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'].forEach(
+      style => {
+        contentState = Modifier.removeInlineStyle(contentState, editorState.getSelection(), style);
+      }
+    );
+
     const customStyles = getSelectionCustomInlineStyle(editorState, [
       'FONTSIZE',
       'FONTFAMILY',
       'COLOR',
       'BGCOLOR',
     ]);
+
     forEach(customStyles, (key, value) => {
       if (value) {
         contentState = Modifier.removeInlineStyle(contentState, editorState.getSelection(), value);
       }
     });
 
-    return EditorState.push(editorState, contentState, 'change-inline-style');
-  };
+    const newState = EditorState.push(editorState, contentState, 'change-inline-style');
 
-  doExpand = () => {
-    this.setState({
-      expanded: true,
-    });
-  };
+    onChange(newState);
+  }, [onChange, editorState]);
 
-  doCollapse = () => {
-    this.setState({
-      expanded: false,
-    });
-  };
-
-  render() {
-    const { config, translations } = this.props;
-    const { expanded } = this.state;
-    const RemoveComponent = config.component || LayoutComponent;
-    return (
-      <RemoveComponent
-        config={config}
-        translations={translations}
-        expanded={expanded}
-        onExpandEvent={this.onExpandEvent}
-        doExpand={this.doExpand}
-        doCollapse={this.doCollapse}
-        onChange={this.removeInlineStyles}
-      />
-    );
-  }
+  return (
+    <div className="rdw-remove-wrapper" aria-label="rdw-remove-control">
+      <Option
+        onClick={removeInlineStyles}
+        title={intl.formatMessage({ id: 'wysiwygEditor.remove' })}
+      >
+        <img src={eraserIcon} alt="" />
+      </Option>
+    </div>
+  );
 }
-
-// todo: unit test coverage

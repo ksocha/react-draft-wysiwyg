@@ -54,6 +54,7 @@ export default {
       undo: `Undo`,
       redo: `Redo`,
     },
+    remove: `Remove`,
   },
 
   // Image
@@ -75,7 +76,4 @@ export default {
   'components.controls.list.ordered': 'Ordered',
   'components.controls.list.indent': 'Indent',
   'components.controls.list.outdent': 'Outdent',
-
-  // Remove
-  'components.controls.remove.remove': 'Remove',
 };
