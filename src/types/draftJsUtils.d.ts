@@ -1,6 +1,6 @@
 declare module 'draftjs-utils' {
   import { EditorState, ContentBlock } from 'draft-js';
-  import { OrderedMap, List } from 'immutable';
+  import { OrderedMap, List, Map } from 'immutable';
 
   export type InlineStyles = {
     BOLD?: boolean;
@@ -28,7 +28,9 @@ declare module 'draftjs-utils' {
     editorState: EditorState,
     object: Record<string, unknown>
   ): EditorState;
-  export function getSelectedBlocksMetadata(editorState: EditorState): Map;
+  export function getSelectedBlocksMetadata(
+    editorState: EditorState
+  ): Map<string, string | undefined>;
   export function blockRenderMap(): Map;
   export function getSelectionEntity(editorState: EditorState): Entity;
   export function getEntityRange(

@@ -1,92 +1,81 @@
-import React, { Component } from 'react';
+import './styles.css';
+
+import React, { useMemo } from 'react';
+import { useIntl } from 'react-intl';
+import { EditorState } from 'draft-js';
 import { getSelectedBlocksMetadata, setBlockData } from 'draftjs-utils';
-import PropTypes from 'prop-types';
 
-import LayoutComponent from './Component';
+import centerIcon from '../../../images/align-center.svg';
+import justifyIcon from '../../../images/align-justify.svg';
+import leftIcon from '../../../images/align-left.svg';
+import rightIcon from '../../../images/align-right.svg';
+import Option from '../../components/Option';
 
-export default class TextAlign extends Component {
-  static propTypes = {
-    editorState: PropTypes.object.isRequired,
-    onChange: PropTypes.func.isRequired,
-    modalHandler: PropTypes.object,
-    config: PropTypes.object,
-    translations: PropTypes.object,
-  };
+enum TextAlignment {
+  Left = 'left',
+  Right = 'right',
+  Center = 'center',
+  Justify = 'justify',
+}
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentTextAlignment: undefined,
-    };
-  }
+interface Props {
+  onChange: (editorState: EditorState) => void;
+  editorState: EditorState;
+}
 
-  componentDidMount() {
-    const { modalHandler } = this.props;
-    modalHandler.registerCallBack(this.expandCollapse);
-  }
+export default function TextAlign({ onChange, editorState }: Props) {
+  const intl = useIntl();
 
-  componentDidUpdate(prevProps) {
-    const { editorState } = this.props;
-    if (editorState !== prevProps.editorState) {
-      this.setState({
-        currentTextAlignment: getSelectedBlocksMetadata(editorState).get('text-align'),
-      });
-    }
-  }
+  const currentTextAlignment = useMemo(
+    () => getSelectedBlocksMetadata(editorState).get('text-align'),
+    [editorState]
+  );
 
-  componentWillUnmount() {
-    const { modalHandler } = this.props;
-    modalHandler.deregisterCallBack(this.expandCollapse);
-  }
-
-  onExpandEvent = () => {
-    this.signalExpanded = !this.state.expanded;
-  };
-
-  expandCollapse = () => {
-    this.setState({
-      expanded: this.signalExpanded,
-    });
-    this.signalExpanded = false;
-  };
-
-  doExpand = () => {
-    this.setState({
-      expanded: true,
-    });
-  };
-
-  doCollapse = () => {
-    this.setState({
-      expanded: false,
-    });
-  };
-
-  addBlockAlignmentData = value => {
-    const { editorState, onChange } = this.props;
-    const { currentTextAlignment } = this.state;
-    if (currentTextAlignment !== value) {
-      onChange(setBlockData(editorState, { 'text-align': value }));
-    } else {
-      onChange(setBlockData(editorState, { 'text-align': undefined }));
-    }
-  };
-
-  render() {
-    const { config, translations } = this.props;
-    const { expanded, currentTextAlignment } = this.state;
-    const TextAlignmentComponent = config.component || LayoutComponent;
-    return (
-      <TextAlignmentComponent
-        config={config}
-        translations={translations}
-        expanded={expanded}
-        onExpandEvent={this.onExpandEvent}
-        doExpand={this.doExpand}
-        doCollapse={this.doCollapse}
-        currentState={{ textAlignment: currentTextAlignment }}
-        onChange={this.addBlockAlignmentData}
-      />
+  const addBlockAlignmentData = (value: TextAlignment) => {
+    onChange(
+      setBlockData(editorState, {
+        'text-align': currentTextAlignment !== value ? value : undefined,
+      })
     );
-  }
+  };
+
+  return (
+    <div className="rdw-text-align-wrapper" aria-label="rdw-textalign-control">
+      <Option
+        value={TextAlignment.Left}
+        active={currentTextAlignment === TextAlignment.Left}
+        onClick={addBlockAlignmentData}
+        title={intl.formatMessage({ id: 'wysiwygEditor.textalign.left' })}
+      >
+        <img src={leftIcon} alt="" />
+      </Option>
+
+      <Option
+        value={TextAlignment.Center}
+        active={currentTextAlignment === TextAlignment.Center}
+        onClick={addBlockAlignmentData}
+        title={intl.formatMessage({ id: 'wysiwygEditor.textalign.center' })}
+      >
+        <img src={centerIcon} alt="" />
+      </Option>
+
+      <Option
+        value={TextAlignment.Right}
+        active={currentTextAlignment === TextAlignment.Right}
+        onClick={addBlockAlignmentData}
+        title={intl.formatMessage({ id: 'wysiwygEditor.textalign.right' })}
+      >
+        <img src={rightIcon} alt="" />
+      </Option>
+
+      <Option
+        value={TextAlignment.Justify}
+        active={currentTextAlignment === TextAlignment.Justify}
+        onClick={addBlockAlignmentData}
+        title={intl.formatMessage({ id: 'wysiwygEditor.textalign.justify' })}
+      >
+        <img src={justifyIcon} alt="" />
+      </Option>
+    </div>
+  );
 }

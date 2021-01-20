@@ -4,15 +4,6 @@
   margin-bottom: 6px;
   flex-wrap: wrap;
 }
-.rdw-text-align-dropdown {
-  width: 50px;
-  z-index: 90;
-}
-.rdw-text-align-dropdownOption {
-  height: 40px;
-  display: flex;
-  justify-content: center;
-}
 .rdw-right-aligned-block {
   text-align: right;
 }

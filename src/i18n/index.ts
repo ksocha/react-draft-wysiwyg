@@ -35,8 +35,22 @@ export default {
   'components.controls.fontsize.fontsize': 'Font Size',
 
   wysiwygEditor: {
+    inline: {
+      bold: `Bold`,
+      italic: `Italic`,
+      underline: `Underline`,
+      strikethrough: `Strikethrough`,
+      code: `Code`,
+      superscript: `Superscript`,
+      subscript: `Subscript`,
+    },
+    textalign: {
+      left: `Left`,
+      center: `Center`,
+      right: `Right`,
+      justify: `Justify`,
+    },
     history: {
-      title: `History`,
       undo: `Undo`,
       redo: `Redo`,
     },
@@ -47,15 +61,6 @@ export default {
   'components.controls.image.fileUpload': 'File Upload',
   'components.controls.image.byURL': 'URL',
   'components.controls.image.dropFileText': 'Drop the file or click to upload',
-
-  // Inline
-  'components.controls.inline.bold': 'Bold',
-  'components.controls.inline.italic': 'Italic',
-  'components.controls.inline.underline': 'Underline',
-  'components.controls.inline.strikethrough': 'Strikethrough',
-  'components.controls.inline.monospace': 'Monospace',
-  'components.controls.inline.superscript': 'Superscript',
-  'components.controls.inline.subscript': 'Subscript',
 
   // Link
   'components.controls.link.linkTitle': 'Link Title',
@@ -73,11 +78,4 @@ export default {
 
   // Remove
   'components.controls.remove.remove': 'Remove',
-
-  // TextAlign
-  'components.controls.textalign.textalign': 'Text Align',
-  'components.controls.textalign.left': 'Left',
-  'components.controls.textalign.center': 'Center',
-  'components.controls.textalign.right': 'Right',
-  'components.controls.textalign.justify': 'Justify',
 };
