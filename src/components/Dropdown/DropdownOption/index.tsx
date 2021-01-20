@@ -51,9 +51,7 @@ export default class DropDownOption extends Component {
     setHighlighted(-1);
   };
 
-  render(): {
-    [key: string]: any;
-  } {
+  render() {
     const {
       children,
       active,

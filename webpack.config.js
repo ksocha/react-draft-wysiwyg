@@ -4,21 +4,21 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 const precss = require('precss');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  devtool: 'source-map',
-  entry: ['./src/index'],
+  mode: 'development',
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: './dist',
+    // hot: false,
+  },
+  entry: ['./src/index.tsx'],
   output: {
     path: path.join(__dirname, '../dist'),
     filename: 'react-draft-wysiwyg.js',
     library: 'reactDraftWysiwyg',
     libraryTarget: 'umd',
-  },
-  externals: {
-    react: 'react',
-    immutable: 'immutable',
-    'react-dom': 'react-dom',
-    'draft-js': 'draft-js',
   },
   optimization: {
     minimizer: [new UglifyJsPlugin()],
@@ -39,11 +39,12 @@ module.exports = {
         postcss: [autoprefixer, precss],
       },
     }),
+    new HtmlWebpackPlugin(),
   ],
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(ts|js)x?$/,
         use: [{ loader: 'babel-loader' }],
         exclude: /immutable\.js$|draftjs-utils\.js$/,
       },
@@ -68,6 +69,6 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.js', '.json'],
+    extensions: ['.ts', '.tsx', '.js', '.json'],
   },
 };

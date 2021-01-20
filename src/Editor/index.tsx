@@ -1,15 +1,17 @@
 import './styles.css';
 import '../../css/Draft.css';
 
-import React, { Component } from 'react';
+import React, { Component, KeyboardEvent, SyntheticEvent } from 'react';
 import classNames from 'classnames';
 import {
   CompositeDecorator,
+  ContentBlock,
   convertFromRaw,
   convertToRaw,
   Editor,
   EditorState,
   getDefaultKeyBinding,
+  RawDraftContentState,
   RichUtils,
 } from 'draft-js';
 import {
@@ -38,14 +40,73 @@ import { filter, hasProperty } from '../utils/common';
 import { handlePastedText } from '../utils/handlePaste';
 import { mergeRecursive } from '../utils/toolbar';
 
-class WysiwygEditor extends Component {
-  constructor(props) {
+export interface Props {
+  onChange?(contentState: RawDraftContentState): void;
+  onEditorStateChange?(editorState: EditorState): void;
+  onContentStateChange?(contentState: RawDraftContentState): void;
+  initialContentState?: RawDraftContentState;
+  defaultContentState?: RawDraftContentState;
+  contentState?: RawDraftContentState;
+  editorState?: EditorState;
+  defaultEditorState?: EditorState;
+  toolbarOnFocus?: boolean;
+  spellCheck?: boolean;
+  stripPastedStyles?: boolean;
+  toolbar?: object;
+  toolbarCustomButtons?: Array<React.ReactElement<HTMLElement>>;
+  toolbarClassName?: string;
+  toolbarHidden?: boolean;
+  editorClassName?: string;
+  wrapperClassName?: string;
+  toolbarStyle?: object;
+  editorStyle?: React.CSSProperties;
+  wrapperStyle?: React.CSSProperties;
+  uploadCallback?(file: object): Promise<object>;
+  onFocus?(event: SyntheticEvent): void;
+  onBlur?(event: SyntheticEvent): void;
+  onTab?(event: KeyboardEvent): boolean | void;
+  mention?: object;
+  hashtag?: object;
+  textAlignment?: string;
+  readOnly?: boolean;
+  tabIndex?: number;
+  placeholder?: string;
+  ariaLabel?: string;
+  ariaOwneeID?: string;
+  ariaActiveDescendantID?: string;
+  ariaAutoComplete?: string;
+  ariaDescribedBy?: string;
+  ariaExpanded?: string;
+  ariaHasPopup?: string;
+  customBlockRenderFunc?(block: ContentBlock): any;
+  wrapperId?: number;
+  customDecorators?: object[];
+  editorRef?(ref: object): void;
+  handlePastedText?(
+    text: string,
+    html: string,
+    editorState: EditorState,
+    onChange: (editorState: EditorState) => void
+  ): boolean;
+  customStyleMap?: object;
+}
+
+export default class WysiwygEditor extends Component<Props> {
+  static defaultProps = {
+    toolbarOnFocus: false,
+    toolbarHidden: false,
+    stripPastedStyles: false,
+    customDecorators: [],
+  };
+
+  private modalHandler = new ModalHandler();
+  private focusHandler = new FocusHandler();
+
+  constructor(props: Props) {
     super(props);
     const toolbar = mergeRecursive(defaultToolbar, props.toolbar);
-    const wrapperId = props.wrapperId ? props.wrapperId : Math.floor(Math.random() * 10000);
+    const wrapperId = props.wrapperId || Math.floor(Math.random() * 10000);
     this.wrapperId = `rdw-wrapper-${wrapperId}`;
-    this.modalHandler = new ModalHandler();
-    this.focusHandler = new FocusHandler();
     this.blockRendererFn = getBlockRenderFunc(
       {
         isReadOnly: this.isReadOnly,
@@ -72,7 +133,7 @@ class WysiwygEditor extends Component {
   }
   // todo: change decorators depending on properties recceived in componentWillReceiveProps.
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if (prevProps === this.props) return;
     const newState = {};
     const { editorState, contentState } = this.props;
@@ -416,7 +477,7 @@ class WysiwygEditor extends Component {
             }}
             onMouseDown={this.preventDefault}
             aria-label="rdw-toolbar"
-            aria-hidden={(!editorFocused && toolbarOnFocus).toString()}
+            aria-hidden={!editorFocused && toolbarOnFocus}
             onFocus={this.onToolbarFocus}
           >
             {toolbar.options.map((opt, index) => {
@@ -463,61 +524,6 @@ class WysiwygEditor extends Component {
     );
   }
 }
-
-WysiwygEditor.propTypes = {
-  onChange: PropTypes.func,
-  onEditorStateChange: PropTypes.func,
-  onContentStateChange: PropTypes.func,
-  // initialContentState is deprecated
-  initialContentState: PropTypes.object,
-  defaultContentState: PropTypes.object,
-  contentState: PropTypes.object,
-  editorState: PropTypes.object,
-  defaultEditorState: PropTypes.object,
-  toolbarOnFocus: PropTypes.bool,
-  spellCheck: PropTypes.bool, // eslint-disable-line react/no-unused-prop-types
-  stripPastedStyles: PropTypes.bool, // eslint-disable-line react/no-unused-prop-types
-  toolbar: PropTypes.object,
-  toolbarCustomButtons: PropTypes.array,
-  toolbarClassName: PropTypes.string,
-  toolbarHidden: PropTypes.bool,
-  editorClassName: PropTypes.string,
-  wrapperClassName: PropTypes.string,
-  toolbarStyle: PropTypes.object,
-  editorStyle: PropTypes.object,
-  wrapperStyle: PropTypes.object,
-  uploadCallback: PropTypes.func,
-  onFocus: PropTypes.func,
-  onBlur: PropTypes.func,
-  onTab: PropTypes.func,
-  mention: PropTypes.object,
-  hashtag: PropTypes.object,
-  textAlignment: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
-  readOnly: PropTypes.bool,
-  tabIndex: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
-  placeholder: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
-  ariaLabel: PropTypes.string,
-  ariaOwneeID: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
-  ariaActiveDescendantID: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
-  ariaAutoComplete: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
-  ariaDescribedBy: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
-  ariaExpanded: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
-  ariaHasPopup: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
-  customBlockRenderFunc: PropTypes.func,
-  wrapperId: PropTypes.number,
-  customDecorators: PropTypes.array,
-  editorRef: PropTypes.func,
-  handlePastedText: PropTypes.func,
-};
-
-WysiwygEditor.defaultProps = {
-  toolbarOnFocus: false,
-  toolbarHidden: false,
-  stripPastedStyles: false,
-  customDecorators: [],
-};
-
-export default WysiwygEditor;
 
 // todo: evaluate draftjs-utils to move some methods here
 // todo: move color near font-family

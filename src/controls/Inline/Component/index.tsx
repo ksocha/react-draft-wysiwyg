@@ -20,9 +20,7 @@ export default class Inline extends Component {
     translations: PropTypes.object,
   };
 
-  renderInFlatList(): {
-    [key: string]: any;
-  } {
+  renderInFlatList() {
     const { config, currentState, onChange, translations } = this.props;
     return (
       <div
@@ -45,9 +43,7 @@ export default class Inline extends Component {
     );
   }
 
-  renderInDropDown(): {
-    [key: string]: any;
-  } {
+  renderInDropDown() {
     const {
       config,
       expanded,
@@ -87,9 +83,7 @@ export default class Inline extends Component {
     );
   }
 
-  render(): {
-    [key: string]: any;
-  } {
+  render() {
     const {
       config: { inDropdown },
     } = this.props;

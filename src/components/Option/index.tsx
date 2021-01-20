@@ -2,25 +2,24 @@ import './styles.css';
 
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 
-export default class Option extends Component {
-  static propTypes = {
-    onClick: PropTypes.func.isRequired,
-    children: PropTypes.any,
-    value: PropTypes.string,
-    className: PropTypes.string,
-    activeClassName: PropTypes.string,
-    active: PropTypes.bool,
-    disabled: PropTypes.bool,
-    title: PropTypes.string,
-  };
+interface Props {
+  onClick: (value: string) => void;
+  children: React.ReactNode;
+  value: string;
+  className?: string;
+  activeClassName?: string;
+  active?: boolean;
+  disabled: boolean;
+  title: string;
+}
 
+export default class Option extends Component<Props> {
   static defaultProps = {
     activeClassName: '',
   };
 
-  onClick: (...args: Array<any>) => any = () => {
+  onClick = () => {
     const { disabled, onClick, value } = this.props;
     if (!disabled) {
       onClick(value);

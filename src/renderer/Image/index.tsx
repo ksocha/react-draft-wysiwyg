@@ -9,16 +9,12 @@ import Option from '../../components/Option';
 
 const getImageComponent = config =>
   class Image extends Component {
-    static propTypes: {
-      [key: string]: any;
-    } = {
+    static propTypes = {
       block: PropTypes.object,
       contentState: PropTypes.object,
     };
 
-    state: {
-      [key: string]: any;
-    } = {
+    state = {
       hovered: false,
     };
 
@@ -51,11 +47,7 @@ const getImageComponent = config =>
       });
     };
 
-    renderAlignmentOptions(
-      alignment
-    ): {
-      [key: string]: any;
-    } {
+    renderAlignmentOptions(alignment) {
       return (
         <div
           className={classNames('rdw-image-alignment-options-popup', {
@@ -75,9 +67,7 @@ const getImageComponent = config =>
       );
     }
 
-    render(): {
-      [key: string]: any;
-    } {
+    render() {
       const { block, contentState } = this.props;
       const { hovered } = this.state;
       const { isReadOnly, isImageAlignmentEnabled } = config;

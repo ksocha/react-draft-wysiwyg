@@ -41,9 +41,7 @@ export default class LayoutComponent extends Component {
 
   // todo: evaluate refactoring this code to put a loop there and in other places also in code
   // hint: it will require moving click handlers
-  renderInFlatList(): {
-    [key: string]: any;
-  } {
+  renderInFlatList() {
     const {
       config,
       currentState: { listType },
@@ -100,9 +98,7 @@ export default class LayoutComponent extends Component {
     );
   }
 
-  renderInDropDown(): {
-    [key: string]: any;
-  } {
+  renderInDropDown() {
     const {
       config,
       expanded,
@@ -145,9 +141,7 @@ export default class LayoutComponent extends Component {
     );
   }
 
-  render(): {
-    [key: string]: any;
-  } {
+  render() {
     const {
       config: { inDropdown },
     } = this.props;

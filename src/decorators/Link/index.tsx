@@ -21,9 +21,7 @@ function getLinkComponent(config) {
       contentState: PropTypes.object,
     };
 
-    state: {
-      [key: string]: any;
-    } = {
+    state = {
       showPopOver: false,
     };
 

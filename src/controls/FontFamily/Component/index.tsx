@@ -18,9 +18,7 @@ class LayoutComponent extends Component {
     translations: PropTypes.object,
   };
 
-  state: {
-    [key: string]: any;
-  } = {
+  state = {
     defaultFontFamily: undefined,
   };
 

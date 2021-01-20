@@ -8,9 +8,7 @@ import Option from '../../../components/Option';
 import { stopPropagation } from '../../../utils/common';
 
 class LayoutComponent extends Component {
-  static propTypes: {
-    [key: string]: any;
-  } = {
+  static propTypes = {
     expanded: PropTypes.bool,
     onExpandEvent: PropTypes.func,
     onChange: PropTypes.func,
@@ -23,9 +21,7 @@ class LayoutComponent extends Component {
     onChange(event.target.innerHTML);
   };
 
-  renderEmojiModal(): {
-    [key: string]: any;
-  } {
+  renderEmojiModal() {
     const {
       config: { popupClassName, emojis },
     } = this.props;
@@ -40,9 +36,7 @@ class LayoutComponent extends Component {
     );
   }
 
-  render(): {
-    [key: string]: any;
-  } {
+  render() {
     const {
       config: { icon, className, title },
       expanded,
