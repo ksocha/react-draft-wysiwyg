@@ -17,10 +17,14 @@ export default class Inline extends Component {
 
   constructor(props) {
     super(props);
-    const { editorState, modalHandler } = this.props;
+    const { editorState } = this.props;
     this.state = {
       currentStyles: editorState ? this.changeKeys(getSelectionInlineStyle(editorState)) : {},
     };
+  }
+
+  componentDidMount() {
+    const { modalHandler } = this.props;
     modalHandler.registerCallBack(this.expandCollapse);
   }
 

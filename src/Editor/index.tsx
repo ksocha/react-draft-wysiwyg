@@ -31,7 +31,7 @@ import FocusHandler from '../event-handler/focus';
 import KeyDownHandler from '../event-handler/keyDown';
 import ModalHandler from '../event-handler/modals';
 import SuggestionHandler from '../event-handler/suggestions';
-import localeTranslations from '../i18n';
+import translations from '../i18n';
 import getBlockRenderFunc from '../renderer';
 import blockStyleFn from '../utils/BlockStyle';
 import { filter, hasProperty } from '../utils/common';
@@ -283,8 +283,6 @@ class WysiwygEditor extends Component {
       'contentState',
       'editorState',
       'defaultEditorState',
-      'locale',
-      'localization',
       'toolbarOnFocus',
       'toolbar',
       'toolbarCustomButtons',
@@ -380,8 +378,6 @@ class WysiwygEditor extends Component {
   render() {
     const { editorState, editorFocused, toolbar } = this.state;
     const {
-      locale,
-      localization: { locale: newLocale, translations },
       toolbarCustomButtons,
       toolbarOnFocus,
       toolbarClassName,
@@ -399,10 +395,7 @@ class WysiwygEditor extends Component {
       modalHandler: this.modalHandler,
       editorState,
       onChange: this.onChange,
-      translations: {
-        ...localeTranslations[locale || newLocale],
-        ...translations,
-      },
+      translations,
     };
     const toolbarShow = editorFocused || this.focusHandler.isInputFocused() || !toolbarOnFocus;
     return (
@@ -488,8 +481,6 @@ WysiwygEditor.propTypes = {
   toolbarCustomButtons: PropTypes.array,
   toolbarClassName: PropTypes.string,
   toolbarHidden: PropTypes.bool,
-  locale: PropTypes.string,
-  localization: PropTypes.object,
   editorClassName: PropTypes.string,
   wrapperClassName: PropTypes.string,
   toolbarStyle: PropTypes.object,
@@ -523,7 +514,6 @@ WysiwygEditor.defaultProps = {
   toolbarOnFocus: false,
   toolbarHidden: false,
   stripPastedStyles: false,
-  localization: { locale: 'en', translations: {} },
   customDecorators: [],
 };
 

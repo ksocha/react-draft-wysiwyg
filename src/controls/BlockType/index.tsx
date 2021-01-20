@@ -16,11 +16,15 @@ class BlockType extends Component {
 
   constructor(props) {
     super(props);
-    const { editorState, modalHandler } = props;
+    const { editorState } = props;
     this.state = {
       expanded: false,
       currentBlockType: editorState ? getSelectedBlocksType(editorState) : 'unstyled',
     };
+  }
+
+  componentDidMount() {
+    const { modalHandler } = this.props;
     modalHandler.registerCallBack(this.expandCollapse);
   }
 
@@ -58,7 +62,7 @@ class BlockType extends Component {
     { label: 'H5', style: 'header-five' },
     { label: 'H6', style: 'header-six' },
     { label: 'Blockquote', style: 'blockquote' },
-    { label: 'Code', style: 'code' },
+    { label: 'CodeBlock', style: 'code-block' },
   ];
 
   doExpand = () => {
