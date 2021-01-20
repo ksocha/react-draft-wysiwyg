@@ -15,7 +15,7 @@ declare module 'draftjs-utils' {
   export function getSelectedBlocksMap(editorState: EditorState): OrderedMap;
   export function getSelectedBlocksList(editorState: EditorState): List;
   export function getSelectedBlock(editorState: EditorState): ContentBlock;
-  export function getBlockBeforeSelectedBlock(editorState: EditorState): ContentBlock;
+  export function getBlockBeforeSelectedBlock(editorState: EditorState): ContentBlock | undefined;
   export function getAllBlocks(editorState: EditorState): List;
   export function getSelectedBlocksType(editorState: EditorState): string;
   export function removeSelectedBlocksStyle(editorState: EditorState): EditorState;

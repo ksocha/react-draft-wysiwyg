@@ -50,6 +50,12 @@ export default {
       right: `Right`,
       justify: `Justify`,
     },
+    list: {
+      unordered: `Unordered`,
+      ordered: `Ordered`,
+      indent: `Indent`,
+      outdent: `Outdent`,
+    },
     history: {
       undo: `Undo`,
       redo: `Redo`,
@@ -69,11 +75,4 @@ export default {
   'components.controls.link.linkTargetOption': 'Open link in new window',
   'components.controls.link.link': 'Link',
   'components.controls.link.unlink': 'Unlink',
-
-  // List
-  'components.controls.list.list': 'List',
-  'components.controls.list.unordered': 'Unordered',
-  'components.controls.list.ordered': 'Ordered',
-  'components.controls.list.indent': 'Indent',
-  'components.controls.list.outdent': 'Outdent',
 };
