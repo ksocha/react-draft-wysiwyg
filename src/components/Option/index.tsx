@@ -10,7 +10,7 @@ interface Props {
   className?: string;
   activeClassName?: string;
   active?: boolean;
-  disabled: boolean;
+  disabled?: boolean;
   title: string;
 }
 

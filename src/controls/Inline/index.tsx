@@ -1,115 +1,109 @@
-import React, { Component } from 'react';
+import './styles.css';
+
+import React, { useMemo } from 'react';
+import { useIntl } from 'react-intl';
 import { EditorState, Modifier, RichUtils } from 'draft-js';
-import { getSelectionInlineStyle } from 'draftjs-utils';
-import PropTypes from 'prop-types';
+import { getSelectionInlineStyle, InlineStyles } from 'draftjs-utils';
 
-import { forEach } from '../../utils/common';
-import LayoutComponent from './Component';
+import boldIcon from '../../../images/bold.svg';
+import italicIcon from '../../../images/italic.svg';
+import monospaceIcon from '../../../images/monospace.svg';
+import strikethroughIcon from '../../../images/strikethrough.svg';
+import subscriptIcon from '../../../images/subscript.svg';
+import superscriptIcon from '../../../images/superscript.svg';
+import underlineIcon from '../../../images/underline.svg';
+import Option from '../../components/Option';
 
-export default class Inline extends Component {
-  static propTypes = {
-    onChange: PropTypes.func.isRequired,
-    editorState: PropTypes.object.isRequired,
-    modalHandler: PropTypes.object,
-    config: PropTypes.object,
-    translations: PropTypes.object,
-  };
+interface Props {
+  onChange: (editorState: EditorState) => void;
+  editorState: EditorState;
+}
 
-  constructor(props) {
-    super(props);
-    const { editorState } = this.props;
-    this.state = {
-      currentStyles: editorState ? this.changeKeys(getSelectionInlineStyle(editorState)) : {},
-    };
-  }
+export default function Inline({ onChange, editorState }: Props) {
+  const intl = useIntl();
 
-  componentDidMount() {
-    const { modalHandler } = this.props;
-    modalHandler.registerCallBack(this.expandCollapse);
-  }
+  const currentStyles = useMemo(() => getSelectionInlineStyle(editorState), [editorState]);
 
-  componentDidUpdate(prevProps) {
-    const { editorState } = this.props;
-    if (editorState && editorState !== prevProps.editorState) {
-      this.setState({
-        currentStyles: this.changeKeys(getSelectionInlineStyle(editorState)),
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    const { modalHandler } = this.props;
-    modalHandler.deregisterCallBack(this.expandCollapse);
-  }
-
-  onExpandEvent = () => {
-    this.signalExpanded = !this.state.expanded;
-  };
-
-  expandCollapse = () => {
-    this.setState({
-      expanded: this.signalExpanded,
-    });
-    this.signalExpanded = false;
-  };
-
-  toggleInlineStyle = style => {
-    const newStyle = style === 'monospace' ? 'CODE' : style.toUpperCase();
-    const { editorState, onChange } = this.props;
+  const toggleInlineStyle = (newStyle: keyof InlineStyles) => {
     let newState = RichUtils.toggleInlineStyle(editorState, newStyle);
-    if (style === 'subscript' || style === 'superscript') {
-      const removeStyle = style === 'subscript' ? 'SUPERSCRIPT' : 'SUBSCRIPT';
+    if (newStyle === 'SUBSCRIPT' || newStyle === 'SUPERSCRIPT') {
       const contentState = Modifier.removeInlineStyle(
         newState.getCurrentContent(),
         newState.getSelection(),
-        removeStyle
+        newStyle === 'SUBSCRIPT' ? 'SUPERSCRIPT' : 'SUBSCRIPT'
       );
       newState = EditorState.push(newState, contentState, 'change-inline-style');
     }
-    if (newState) {
-      onChange(newState);
-    }
+
+    onChange(newState);
   };
 
-  changeKeys = style => {
-    if (style) {
-      const st = {};
-      forEach(style, (key, value) => {
-        st[key === 'CODE' ? 'monospace' : key.toLowerCase()] = value;
-      });
-      return st;
-    }
-    return undefined;
-  };
+  return (
+    <div className="rdw-inline-wrapper" aria-label="rdw-inline-control">
+      <Option
+        value="BOLD"
+        onClick={toggleInlineStyle}
+        active={currentStyles.BOLD}
+        title={intl.formatMessage({ id: 'wysiwygEditor.inline.bold' })}
+      >
+        <img alt="" src={boldIcon} />
+      </Option>
 
-  doExpand = () => {
-    this.setState({
-      expanded: true,
-    });
-  };
+      <Option
+        value="ITALIC"
+        onClick={toggleInlineStyle}
+        active={currentStyles.ITALIC}
+        title={intl.formatMessage({ id: 'wysiwygEditor.inline.italic' })}
+      >
+        <img alt="" src={italicIcon} />
+      </Option>
 
-  doCollapse = () => {
-    this.setState({
-      expanded: false,
-    });
-  };
+      <Option
+        value="UNDERLINE"
+        onClick={toggleInlineStyle}
+        active={currentStyles.UNDERLINE}
+        title={intl.formatMessage({ id: 'wysiwygEditor.inline.underline' })}
+      >
+        <img alt="" src={underlineIcon} />
+      </Option>
 
-  render() {
-    const { config, translations } = this.props;
-    const { expanded, currentStyles } = this.state;
-    const InlineComponent = config.component || LayoutComponent;
-    return (
-      <InlineComponent
-        config={config}
-        translations={translations}
-        currentState={currentStyles}
-        expanded={expanded}
-        onExpandEvent={this.onExpandEvent}
-        doExpand={this.doExpand}
-        doCollapse={this.doCollapse}
-        onChange={this.toggleInlineStyle}
-      />
-    );
-  }
+      <Option
+        value="STRIKETHROUGH"
+        onClick={toggleInlineStyle}
+        active={currentStyles.STRIKETHROUGH}
+        title={intl.formatMessage({ id: 'wysiwygEditor.inline.strikethrough' })}
+      >
+        <img alt="" src={strikethroughIcon} />
+      </Option>
+
+      <Option
+        value="CODE"
+        onClick={toggleInlineStyle}
+        active={currentStyles.CODE}
+        title={intl.formatMessage({ id: 'wysiwygEditor.inline.code' })}
+      >
+        <img alt="" src={monospaceIcon} />
+      </Option>
+
+      <Option
+        value="SUPERSCRIPT"
+        onClick={toggleInlineStyle}
+        active={currentStyles.SUPERSCRIPT}
+        title={intl.formatMessage({ id: 'wysiwygEditor.inline.superscript' })}
+      >
+        <img alt="" src={superscriptIcon} />
+      </Option>
+
+      <Option
+        value="SUBSCRIPT"
+        onClick={toggleInlineStyle}
+        active={currentStyles.SUBSCRIPT}
+        title={intl.formatMessage({ id: 'wysiwygEditor.inline.subscript' })}
+      >
+        <img alt="" src={subscriptIcon} />
+      </Option>
+    </div>
+  );
 }
+
 // make subscript less low

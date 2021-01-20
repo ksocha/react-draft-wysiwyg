@@ -1,73 +1,52 @@
-import React, { Component } from 'react';
+import './styles.css';
+
+import React, { useCallback, useMemo } from 'react';
+import { useIntl } from 'react-intl';
 import { EditorState } from 'draft-js';
 
-import ModalHandler from '../../event-handler/modals';
-import { History as HistoryComponent, HistoryConfig } from './Component';
+import redoIcon from '../../../images/redo.svg';
+import undoIcon from '../../../images/undo.svg';
+import Option from '../../components/Option';
 
 interface Props {
   onChange: (editorState: EditorState) => void;
-  editorState?: EditorState;
-  modalHandler: ModalHandler;
-  config?: HistoryConfig;
-  translations?: object;
+  editorState: EditorState;
 }
 
-interface State {
-  expanded: boolean;
-}
+export default function History({ editorState, onChange }: Props) {
+  const intl = useIntl();
 
-export default class History extends Component<Props, State> {
-  state: State = {
-    expanded: false,
-  };
+  const undoDisabled = useMemo(() => editorState.getUndoStack().size === 0, [editorState]);
 
-  componentDidMount() {
-    const { modalHandler } = this.props;
-    modalHandler.registerCallBack(this.expandCollapse);
-  }
+  const handleUndo = useCallback(() => {
+    onChange(EditorState.undo(editorState));
+  }, [editorState, onChange]);
 
-  componentWillUnmount() {
-    const { modalHandler } = this.props;
-    modalHandler.deregisterCallBack(this.expandCollapse);
-  }
+  const redoDisabled = useMemo(() => editorState.getRedoStack().size === 0, [editorState]);
 
-  onExpandEvent = () => {
-    this.signalExpanded = !this.state.expanded;
-  };
+  const handleRedo = useCallback(() => {
+    onChange(EditorState.redo(editorState));
+  }, [editorState, onChange]);
 
-  onChange = (action: string) => {
-    const { editorState, onChange } = this.props;
-    const newState = EditorState[action](editorState);
-    if (newState) {
-      onChange(newState);
-    }
-  };
+  return (
+    <div className="rdw-history-wrapper" aria-label="rdw-history-control">
+      <Option
+        value="undo"
+        onClick={handleUndo}
+        disabled={undoDisabled}
+        title={intl.formatMessage({ id: 'wysiwygEditor.history.undo' })}
+      >
+        <img src={undoIcon} alt="" />
+      </Option>
 
-  doExpand = () => this.setState({ expanded: true });
-
-  doCollapse = () => this.setState({ expanded: false });
-
-  expandCollapse = () => {
-    this.setState({ expanded: this.signalExpanded });
-    this.signalExpanded = false;
-  };
-
-  render() {
-    const { config, translations, editorState } = this.props;
-    const { expanded } = this.state;
-
-    return (
-      <HistoryComponent
-        config={config}
-        translations={translations}
-        undoDisabled={editorState?.getUndoStack().size === 0}
-        redoDisabled={editorState?.getRedoStack().size === 0}
-        expanded={expanded}
-        onExpandEvent={this.onExpandEvent}
-        doExpand={this.doExpand}
-        doCollapse={this.doCollapse}
-        onChange={this.onChange}
-      />
-    );
-  }
+      <Option
+        value="redo"
+        onClick={handleRedo}
+        disabled={redoDisabled}
+        title={intl.formatMessage({ id: 'wysiwygEditor.history.redo' })}
+      >
+        <img src={redoIcon} alt="" />
+      </Option>
+    </div>
+  );
 }

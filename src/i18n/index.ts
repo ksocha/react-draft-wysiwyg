@@ -34,10 +34,13 @@ export default {
   // FontSize
   'components.controls.fontsize.fontsize': 'Font Size',
 
-  // History
-  'components.controls.history.history': 'History',
-  'components.controls.history.undo': 'Undo',
-  'components.controls.history.redo': 'Redo',
+  wysiwygEditor: {
+    history: {
+      title: `History`,
+      undo: `Undo`,
+      redo: `Redo`,
+    },
+  },
 
   // Image
   'components.controls.image.image': 'Image',
