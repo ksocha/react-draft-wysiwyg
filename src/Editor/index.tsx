@@ -1,5 +1,5 @@
 import './styles.css';
-import '../../css/Draft.css';
+import 'draft-js/dist/Draft.css';
 
 import React, { Component, KeyboardEvent, SyntheticEvent } from 'react';
 import classNames from 'classnames';
