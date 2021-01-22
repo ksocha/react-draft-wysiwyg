@@ -1,10 +1,8 @@
+import { ContentBlock } from 'draft-js';
+
 import getImageComponent from '../renderer/Image';
 
-const getBlockRenderFunc = (config, customBlockRenderer) => block => {
-  if (typeof customBlockRenderer === 'function') {
-    const renderedComponent = customBlockRenderer(block, config, config.getEditorState);
-    if (renderedComponent) return renderedComponent;
-  }
+const getBlockRenderFunc = config => (block: ContentBlock) => {
   if (block.getType() === 'atomic') {
     const contentState = config.getEditorState().getCurrentContent();
     const entity = contentState.getEntity(block.getEntityAt(0));

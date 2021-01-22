@@ -32,10 +32,18 @@ import ModalHandler from '../event-handler/modals';
 import SuggestionHandler from '../event-handler/suggestions';
 import translations from '../i18n';
 import getBlockRenderFunc from '../renderer';
-import blockStyleFn from '../utils/BlockStyle';
 import { filter, hasProperty } from '../utils/common';
 import { handlePastedText } from '../utils/handlePaste';
 import { mergeRecursive } from '../utils/toolbar';
+
+function blockStyleFn(block: ContentBlock): string {
+  const blockAlignment = block.getData().get('text-align');
+  if (blockAlignment) {
+    return `rdw-${blockAlignment}-aligned-block`;
+  }
+
+  return '';
+}
 
 export interface Props {
   onChange?(contentState: RawDraftContentState): void;
@@ -50,10 +58,8 @@ export interface Props {
   spellCheck?: boolean;
   stripPastedStyles?: boolean;
   toolbar?: object;
-  toolbarCustomButtons?: Array<React.ReactElement<HTMLElement>>;
   toolbarClassName?: string;
   toolbarHidden?: boolean;
-  editorClassName?: string;
   wrapperClassName?: string;
   toolbarStyle?: object;
   editorStyle?: React.CSSProperties;
@@ -73,7 +79,6 @@ export interface Props {
   ariaDescribedBy?: string;
   ariaExpanded?: string;
   ariaHasPopup?: string;
-  customBlockRenderFunc?(block: ContentBlock): any;
   wrapperId?: number;
   editorRef?(ref: object): void;
   handlePastedText?(
@@ -104,15 +109,12 @@ export default class WysiwygEditor extends Component<Props> {
     const wrapperId = props.wrapperId || Math.floor(Math.random() * 10000);
     this.wrapperId = `rdw-wrapper-${wrapperId}`;
 
-    this.blockRendererFn = getBlockRenderFunc(
-      {
-        isReadOnly: props.readOnly,
-        isImageAlignmentEnabled: this.isImageAlignmentEnabled,
-        getEditorState: this.getEditorState,
-        onChange: this.onChange,
-      },
-      props.customBlockRenderFunc
-    );
+    this.blockRendererFn = getBlockRenderFunc({
+      isReadOnly: () => props.readOnly,
+      isImageAlignmentEnabled: this.isImageAlignmentEnabled,
+      getEditorState: this.getEditorState,
+      onChange: this.onChange,
+    });
     this.editorProps = this.filterEditorProps(props);
     this.customStyleMap = this.getStyleMap(props);
     this.compositeDecorator = new CompositeDecorator([
@@ -318,9 +320,7 @@ export default class WysiwygEditor extends Component<Props> {
       'defaultEditorState',
       'toolbarOnFocus',
       'toolbar',
-      'toolbarCustomButtons',
       'toolbarClassName',
-      'editorClassName',
       'toolbarHidden',
       'wrapperClassName',
       'toolbarStyle',
@@ -331,7 +331,6 @@ export default class WysiwygEditor extends Component<Props> {
       'onBlur',
       'onTab',
       'ariaLabel',
-      'customBlockRenderFunc',
       'handlePastedText',
       'customStyleMap',
     ]);
@@ -408,11 +407,9 @@ export default class WysiwygEditor extends Component<Props> {
   render() {
     const { editorState, editorFocused, toolbar } = this.state;
     const {
-      toolbarCustomButtons,
       toolbarOnFocus,
       toolbarClassName,
       toolbarHidden,
-      editorClassName,
       wrapperClassName,
       toolbarStyle,
       editorStyle,
@@ -457,15 +454,11 @@ export default class WysiwygEditor extends Component<Props> {
               }
               return <Control key={index} {...controlProps} config={config} />;
             })}
-            {toolbarCustomButtons &&
-              toolbarCustomButtons.map((button, index) =>
-                React.cloneElement(button, { key: index, ...controlProps })
-              )}
           </div>
         )}
         <div
           ref={this.setWrapperReference}
-          className={classNames(editorClassName, 'rdw-editor-main')}
+          className="rdw-editor-main"
           style={editorStyle}
           onClick={this.focusEditor}
           onFocus={this.onEditorFocus}
@@ -493,6 +486,3 @@ export default class WysiwygEditor extends Component<Props> {
     );
   }
 }
-
-// todo: evaluate draftjs-utils to move some methods here
-// todo: move color near font-family
