@@ -25,9 +25,7 @@ import {
 
 import defaultToolbar from '../config/defaultToolbar';
 import Controls from '../controls';
-import getHashtagDecorator from '../decorators/HashTag';
 import getLinkDecorator from '../decorators/Link';
-import getMentionDecorators from '../decorators/Mention';
 import FocusHandler from '../event-handler/focus';
 import KeyDownHandler from '../event-handler/keyDown';
 import ModalHandler from '../event-handler/modals';
@@ -64,8 +62,6 @@ export interface Props {
   onFocus?(event: SyntheticEvent): void;
   onBlur?(event: SyntheticEvent): void;
   onTab?(event: KeyboardEvent): boolean | void;
-  mention?: object;
-  hashtag?: object;
   textAlignment?: string;
   readOnly?: boolean;
   tabIndex?: number;
@@ -79,7 +75,6 @@ export interface Props {
   ariaHasPopup?: string;
   customBlockRenderFunc?(block: ContentBlock): any;
   wrapperId?: number;
-  customDecorators?: object[];
   editorRef?(ref: object): void;
   handlePastedText?(
     text: string,
@@ -95,21 +90,23 @@ export default class WysiwygEditor extends Component<Props> {
     toolbarOnFocus: false,
     toolbarHidden: false,
     stripPastedStyles: false,
-    customDecorators: [],
   };
 
   private modalHandler = new ModalHandler();
 
   private focusHandler = new FocusHandler();
 
+  private compositeDecorator: CompositeDecorator | null;
+
   constructor(props: Props) {
     super(props);
     const toolbar = mergeRecursive(defaultToolbar, props.toolbar);
     const wrapperId = props.wrapperId || Math.floor(Math.random() * 10000);
     this.wrapperId = `rdw-wrapper-${wrapperId}`;
+
     this.blockRendererFn = getBlockRenderFunc(
       {
-        isReadOnly: this.isReadOnly,
+        isReadOnly: props.readOnly,
         isImageAlignmentEnabled: this.isImageAlignmentEnabled,
         getEditorState: this.getEditorState,
         onChange: this.onChange,
@@ -118,7 +115,11 @@ export default class WysiwygEditor extends Component<Props> {
     );
     this.editorProps = this.filterEditorProps(props);
     this.customStyleMap = this.getStyleMap(props);
-    this.compositeDecorator = this.getCompositeDecorator(toolbar);
+    this.compositeDecorator = new CompositeDecorator([
+      getLinkDecorator({
+        showOpenOptionOnHover: toolbar.link.showOpenOptionOnHover,
+      }),
+    ]);
     const editorState = this.createEditorState(this.compositeDecorator);
     extractInlineStyle(editorState);
     this.state = {
@@ -250,36 +251,9 @@ export default class WysiwygEditor extends Component<Props> {
     this.editor = ref;
   };
 
-  getCompositeDecorator = toolbar => {
-    const decorators = [
-      ...this.props.customDecorators,
-      getLinkDecorator({
-        showOpenOptionOnHover: toolbar.link.showOpenOptionOnHover,
-      }),
-    ];
-    if (this.props.mention) {
-      decorators.push(
-        ...getMentionDecorators({
-          ...this.props.mention,
-          onChange: this.onChange,
-          getEditorState: this.getEditorState,
-          getSuggestions: this.getSuggestions,
-          getWrapperRef: this.getWrapperRef,
-          modalHandler: this.modalHandler,
-        })
-      );
-    }
-    if (this.props.hashtag) {
-      decorators.push(getHashtagDecorator(this.props.hashtag));
-    }
-    return new CompositeDecorator(decorators);
-  };
-
   getWrapperRef = () => this.wrapper;
 
   getEditorState = () => (this.state ? this.state.editorState : null);
-
-  getSuggestions = () => this.props.mention && this.props.mention.suggestions;
 
   afterChange = editorState => {
     setTimeout(() => {
@@ -292,8 +266,6 @@ export default class WysiwygEditor extends Component<Props> {
       }
     });
   };
-
-  isReadOnly = () => this.props.readOnly;
 
   isImageAlignmentEnabled = () => this.state.toolbar.image.alignmentEnabled;
 
@@ -358,11 +330,8 @@ export default class WysiwygEditor extends Component<Props> {
       'onFocus',
       'onBlur',
       'onTab',
-      'mention',
-      'hashtag',
       'ariaLabel',
       'customBlockRenderFunc',
-      'customDecorators',
       'handlePastedText',
       'customStyleMap',
     ]);
