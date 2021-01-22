@@ -1,8 +1,7 @@
 import './styles.css';
 
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { useIntl } from 'react-intl';
-import { usePopper } from 'react-popper';
 import { EditorState, Modifier, RichUtils } from 'draft-js';
 import { getEntityRange, getSelectionEntity, getSelectionText } from 'draftjs-utils';
 import linkifyIt from 'linkify-it';
@@ -11,6 +10,7 @@ import linkIcon from '../../../images/link.svg';
 import unlinkIcon from '../../../images/unlink.svg';
 import { ToolButton } from '../common/ToolButton';
 import { ToolGroup } from '../common/ToolGroup';
+import useToolModal from '../common/useToolModal';
 import { AddLinkModal, Props as AddLinkModalProps } from './AddLinkModal';
 
 const linkify = linkifyIt();
@@ -29,11 +29,12 @@ interface Props {
 
 export default function Link({ onChange, editorState }: Props) {
   const intl = useIntl();
-  const [showModal, setShowModal] = useState(false);
-
-  const openModal = () => setShowModal(true);
-
-  const closeModal = () => setShowModal(false);
+  const referenceElementRef = useRef(null);
+  const popperElementRef = useRef(null);
+  const { styles, attributes, closeModal, toggleModal, isModalOpen } = useToolModal(
+    referenceElementRef.current,
+    popperElementRef.current
+  );
 
   const currentEntityKey = useMemo(
     () => (editorState ? getSelectionEntity(editorState) : undefined),
@@ -142,25 +143,15 @@ export default function Link({ onChange, editorState }: Props) {
       onChange(EditorState.push(newEditorState, contentState, 'insert-characters'));
       closeModal();
     },
-    [currentEntityKey, editorState, onChange]
+    [closeModal, currentEntityKey, editorState, onChange]
   );
-
-  const referenceElementRef = useRef(null);
-  const popperElementRef = useRef(null);
-
-  const { styles, attributes } = usePopper(referenceElementRef.current, popperElementRef.current, {
-    modifiers: [
-      { name: 'preventOverflow', enabled: false },
-      { name: 'hide', enabled: false },
-    ],
-    placement: 'bottom-start',
-  });
 
   return (
     <ToolGroup aria-label="rdw-link-control" ref={referenceElementRef}>
       <ToolButton
-        onClick={openModal}
+        onClick={toggleModal}
         aria-haspopup="dialog"
+        aria-pressed={isModalOpen}
         title={intl.formatMessage({ id: 'wysiwygEditor.link.link' })}
       >
         <img src={linkIcon} alt="" />
@@ -178,7 +169,7 @@ export default function Link({ onChange, editorState }: Props) {
         ref={popperElementRef}
         style={styles.popper}
         {...attributes.popper}
-        isOpen={showModal}
+        isOpen={isModalOpen}
         onSubmit={addLink}
         onCancel={closeModal}
         initialValues={{

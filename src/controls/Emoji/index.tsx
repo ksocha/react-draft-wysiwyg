@@ -1,57 +1,28 @@
-import React, { Component } from 'react';
+import React, { useRef } from 'react';
+import { useIntl } from 'react-intl';
 import { EditorState, Modifier } from 'draft-js';
-import PropTypes from 'prop-types';
 
-import LayoutComponent from './Component';
+import emojiIcon from '../../../images/emoji.svg';
+import { ToolButton } from '../common/ToolButton';
+import { ToolGroup } from '../common/ToolGroup';
+import useToolModal from '../common/useToolModal';
+import { EmojiModal } from './EmojiModal';
 
-export default class Emoji extends Component {
-  static propTypes = {
-    editorState: PropTypes.object.isRequired,
-    onChange: PropTypes.func.isRequired,
-    modalHandler: PropTypes.object,
-    config: PropTypes.object,
-    translations: PropTypes.object,
-  };
+interface Props {
+  onChange: (editorState: EditorState) => void;
+  editorState: EditorState;
+}
 
-  state = {
-    expanded: false,
-  };
+export default function Emoji({ onChange, editorState }: Props) {
+  const intl = useIntl();
+  const referenceElementRef = useRef(null);
+  const popperElementRef = useRef(null);
+  const { styles, attributes, closeModal, toggleModal, isModalOpen } = useToolModal(
+    referenceElementRef.current,
+    popperElementRef.current
+  );
 
-  componentDidMount() {
-    const { modalHandler } = this.props;
-    modalHandler.registerCallBack(this.expandCollapse);
-  }
-
-  componentWillUnmount() {
-    const { modalHandler } = this.props;
-    modalHandler.deregisterCallBack(this.expandCollapse);
-  }
-
-  onExpandEvent = () => {
-    this.signalExpanded = !this.state.expanded;
-  };
-
-  expandCollapse = () => {
-    this.setState({
-      expanded: this.signalExpanded,
-    });
-    this.signalExpanded = false;
-  };
-
-  doExpand = () => {
-    this.setState({
-      expanded: true,
-    });
-  };
-
-  doCollapse = () => {
-    this.setState({
-      expanded: false,
-    });
-  };
-
-  addEmoji = emoji => {
-    const { editorState, onChange } = this.props;
+  const addEmoji = (emoji: string) => {
     const contentState = Modifier.replaceText(
       editorState.getCurrentContent(),
       editorState.getSelection(),
@@ -59,26 +30,28 @@ export default class Emoji extends Component {
       editorState.getCurrentInlineStyle()
     );
     onChange(EditorState.push(editorState, contentState, 'insert-characters'));
-    this.doCollapse();
+    closeModal();
   };
 
-  render() {
-    const { config, translations } = this.props;
-    const { expanded } = this.state;
-    const EmojiComponent = config.component || LayoutComponent;
-    return (
-      <EmojiComponent
-        config={config}
-        translations={translations}
-        onChange={this.addEmoji}
-        expanded={expanded}
-        onExpandEvent={this.onExpandEvent}
-        doExpand={this.doExpand}
-        doCollapse={this.doCollapse}
-        onCollpase={this.closeModal}
-      />
-    );
-  }
-}
+  return (
+    <ToolGroup aria-label="rdw-emoji-control" ref={referenceElementRef}>
+      <ToolButton
+        aria-haspopup="dialog"
+        aria-pressed={isModalOpen}
+        title={intl.formatMessage({ id: 'wysiwygEditor.emoji.title' })}
+        onClick={toggleModal}
+      >
+        <img src={emojiIcon} alt="" />
+      </ToolButton>
 
-// todo: unit test cases
+      <EmojiModal
+        ref={popperElementRef}
+        style={styles.popper}
+        {...attributes.popper}
+        isOpen={isModalOpen}
+        onSubmit={addEmoji}
+        onCancel={closeModal}
+      />
+    </ToolGroup>
+  );
+}

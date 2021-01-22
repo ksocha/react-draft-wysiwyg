@@ -23,7 +23,7 @@ export const AddLinkModal = React.forwardRef<HTMLDivElement, Props>(
       onSubmit={onSubmit}
       initialValues={initialValues}
       render={({ handleSubmit, submitting }) => (
-        <ToolModal {...rest} ref={ref}>
+        <ToolModal role="dialog" {...rest} ref={ref}>
           <form onSubmit={handleSubmit}>
             <Field
               name="title"

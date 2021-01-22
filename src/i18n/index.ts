@@ -21,9 +21,6 @@ export default {
   'components.controls.embedded.embeddedlink': 'Embedded Link',
   'components.controls.embedded.enterlink': 'Enter link',
 
-  // Emoji
-  'components.controls.emoji.emoji': 'Emoji',
-
   // FontFamily
   'components.controls.fontfamily.fontfamily': 'Font',
 
@@ -62,6 +59,9 @@ export default {
       openInNewWindow: `Open link in new window`,
       link: `Link`,
       unlink: `Unlink`,
+    },
+    emoji: {
+      title: `Emoji`,
     },
     history: {
       undo: `Undo`,

@@ -4,7 +4,7 @@ interface Props {
   isOpen: boolean;
 }
 
-export const ToolModal = styled.div.attrs({ role: 'dialog' })<Props>`
+export const ToolModal = styled.div<Props>`
   display: flex;
   flex-direction: column;
   width: 235px;
