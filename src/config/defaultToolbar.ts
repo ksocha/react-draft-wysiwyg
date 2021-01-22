@@ -4,7 +4,6 @@ import left from '../../images/align-left.svg';
 import right from '../../images/align-right.svg';
 import bold from '../../images/bold.svg';
 import color from '../../images/color.svg';
-import embedded from '../../images/embedded.svg';
 import emoji from '../../images/emoji.svg';
 import eraser from '../../images/eraser.svg';
 import fontSize from '../../images/font-size.svg';
@@ -38,7 +37,6 @@ export default {
     'textAlign',
     'colorPicker',
     'link',
-    'embedded',
     'emoji',
     'image',
     'remove',
@@ -302,18 +300,6 @@ export default {
       '❎',
       '💯',
     ],
-    title: undefined,
-  },
-  embedded: {
-    icon: embedded,
-    className: undefined,
-    component: undefined,
-    popupClassName: undefined,
-    embedCallback: undefined,
-    defaultSize: {
-      height: 'auto',
-      width: 'auto',
-    },
     title: undefined,
   },
   image: {

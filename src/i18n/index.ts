@@ -16,11 +16,6 @@ export default {
   'components.controls.colorpicker.text': 'Text',
   'components.controls.colorpicker.background': 'Highlight',
 
-  // Embedded
-  'components.controls.embedded.embedded': 'Embedded',
-  'components.controls.embedded.embeddedlink': 'Embedded Link',
-  'components.controls.embedded.enterlink': 'Enter link',
-
   // FontFamily
   'components.controls.fontfamily.fontfamily': 'Font',
 

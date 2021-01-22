@@ -1,6 +1,5 @@
 import blockType from './BlockType';
 import colorPicker from './ColorPicker';
-import embedded from './Embedded';
 import emoji from './Emoji';
 import fontFamily from './FontFamily';
 import fontSize from './FontSize';
@@ -21,7 +20,6 @@ export default {
   textAlign,
   colorPicker,
   link,
-  embedded,
   emoji,
   image,
   remove,
