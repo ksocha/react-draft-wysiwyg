@@ -48,10 +48,12 @@ declare module 'draftjs-utils' {
     editorState: EditorState,
     styles: string[]
   ): Record<string, string>;
+  export function getCustomStyleMap(): Record<string, string>;
   export function toggleCustomInlineStyle(
     editorState: EditorState,
     styleType: string,
     styleValue: string
   ): EditorState;
+  export function extractInlineStyle(editorState: EditorState): void;
   export function removeAllInlineStyles(editorState: EditorState): EditorState;
 }

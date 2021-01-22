@@ -22,7 +22,6 @@ import {
   getSelectedBlocksType,
   handleNewLine,
 } from 'draftjs-utils';
-import PropTypes from 'prop-types';
 
 import defaultToolbar from '../config/defaultToolbar';
 import Controls from '../controls';
@@ -100,6 +99,7 @@ export default class WysiwygEditor extends Component<Props> {
   };
 
   private modalHandler = new ModalHandler();
+
   private focusHandler = new FocusHandler();
 
   constructor(props: Props) {
