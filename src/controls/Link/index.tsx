@@ -1,13 +1,20 @@
-import React, { Component } from 'react';
+import './styles.css';
+
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
+import { usePopper } from 'react-popper';
 import { EditorState, Modifier, RichUtils } from 'draft-js';
 import { getEntityRange, getSelectionEntity, getSelectionText } from 'draftjs-utils';
 import linkifyIt from 'linkify-it';
-import PropTypes from 'prop-types';
 
-import { LinkComponent } from './Component';
+import linkIcon from '../../../images/link.svg';
+import unlinkIcon from '../../../images/unlink.svg';
+import { ToolButton } from '../common/ToolButton';
+import { ToolGroup } from '../common/ToolGroup';
+import { AddLinkModal, Props as AddLinkModalProps } from './AddLinkModal';
 
 const linkify = linkifyIt();
-const linkifyLink = params => {
+const linkifyLink = (params: { title: string; target: string; targetOption: string }) => {
   const links = linkify.match(params.target);
   return {
     ...params,
@@ -15,104 +22,51 @@ const linkifyLink = params => {
   };
 };
 
-class Link extends Component {
-  static propTypes = {
-    editorState: PropTypes.object.isRequired,
-    onChange: PropTypes.func.isRequired,
-    modalHandler: PropTypes.object,
-    config: PropTypes.object,
-    translations: PropTypes.object,
-  };
+interface Props {
+  onChange: (editorState: EditorState) => void;
+  editorState: EditorState;
+}
 
-  constructor(props) {
-    super(props);
-    const { editorState } = this.props;
-    this.state = {
-      expanded: false,
-      link: undefined,
-      selectionText: undefined,
-      currentEntity: editorState ? getSelectionEntity(editorState) : undefined,
-    };
-  }
+export default function Link({ onChange, editorState }: Props) {
+  const intl = useIntl();
+  const [showModal, setShowModal] = useState(false);
 
-  componentDidMount() {
-    const { modalHandler } = this.props;
-    modalHandler.registerCallBack(this.expandCollapse);
-  }
+  const openModal = () => setShowModal(true);
 
-  componentDidUpdate(prevProps) {
-    const { editorState } = this.props;
-    if (editorState && editorState !== prevProps.editorState) {
-      this.setState({ currentEntity: getSelectionEntity(editorState) });
-    }
-  }
+  const closeModal = () => setShowModal(false);
 
-  componentWillUnmount() {
-    const { modalHandler } = this.props;
-    modalHandler.deregisterCallBack(this.expandCollapse);
-  }
+  const currentEntityKey = useMemo(
+    () => (editorState ? getSelectionEntity(editorState) : undefined),
+    [editorState]
+  );
 
-  onExpandEvent = () => {
-    this.signalExpanded = !this.state.expanded;
-  };
+  const selectionText = useMemo(() => {
+    return getSelectionText(editorState);
+  }, [editorState]);
 
-  onChange = (action, title, target, targetOption) => {
-    const {
-      config: { linkCallback },
-    } = this.props;
-
-    if (action === 'link') {
-      const linkifyCallback = linkCallback || linkifyLink;
-      const linkified = linkifyCallback({ title, target, targetOption });
-      this.addLink(linkified.title, linkified.target, linkified.targetOption);
-    } else {
-      this.removeLink();
-    }
-  };
-
-  getCurrentValues = () => {
-    const { editorState } = this.props;
-    const { currentEntity } = this.state;
+  const link = useMemo(() => {
     const contentState = editorState.getCurrentContent();
-    const currentValues = {};
-    if (currentEntity && contentState.getEntity(currentEntity).get('type') === 'LINK') {
-      currentValues.link = {};
-      const entityRange = currentEntity && getEntityRange(editorState, currentEntity);
-      currentValues.link.target =
-        currentEntity && contentState.getEntity(currentEntity).get('data').url;
-      currentValues.link.targetOption =
-        currentEntity && contentState.getEntity(currentEntity).get('data').targetOption;
-      currentValues.link.title = entityRange && entityRange.text;
+    const entity = currentEntityKey ? contentState.getEntity(currentEntityKey) : undefined;
+
+    if (entity?.getType() === 'LINK') {
+      const entityRange = currentEntityKey
+        ? getEntityRange(editorState, currentEntityKey)
+        : undefined;
+
+      return {
+        title: entityRange?.text,
+        target: entity.getData().url as string,
+        targetOption: entity.getData().targetOption as string,
+      };
     }
-    currentValues.selectionText = getSelectionText(editorState);
-    return currentValues;
-  };
 
-  doExpand = () => {
-    this.setState({
-      expanded: true,
-    });
-  };
+    return undefined;
+  }, [currentEntityKey, editorState]);
 
-  expandCollapse = () => {
-    this.setState({
-      expanded: this.signalExpanded,
-    });
-    this.signalExpanded = false;
-  };
-
-  doCollapse = () => {
-    this.setState({
-      expanded: false,
-    });
-  };
-
-  removeLink = () => {
-    const { editorState, onChange } = this.props;
-    const { currentEntity } = this.state;
+  const removeLink = useCallback(() => {
     let selection = editorState.getSelection();
-    if (currentEntity) {
-      const entityRange = getEntityRange(editorState, currentEntity);
+    if (currentEntityKey) {
+      const entityRange = getEntityRange(editorState, currentEntityKey);
       const isBackward = selection.getIsBackward();
       if (isBackward) {
         selection = selection.merge({
@@ -127,88 +81,112 @@ class Link extends Component {
       }
       onChange(RichUtils.toggleLink(editorState, selection, null));
     }
-  };
+  }, [currentEntityKey, editorState, onChange]);
 
-  addLink = (linkTitle, linkTarget, linkTargetOption) => {
-    const { editorState, onChange } = this.props;
-    const { currentEntity } = this.state;
-    let selection = editorState.getSelection();
+  const addLink = useCallback<AddLinkModalProps['onSubmit']>(
+    values => {
+      const { title, target, targetOption } = linkifyLink({
+        title: values.title,
+        target: values.target,
+        targetOption: values.openInNewWindow ? '_blank' : '_self',
+      });
 
-    if (currentEntity) {
-      const entityRange = getEntityRange(editorState, currentEntity);
-      const isBackward = selection.getIsBackward();
-      if (isBackward) {
-        selection = selection.merge({
-          anchorOffset: entityRange.end,
-          focusOffset: entityRange.start,
-        });
-      } else {
-        selection = selection.merge({
-          anchorOffset: entityRange.start,
-          focusOffset: entityRange.end,
-        });
+      let selection = editorState.getSelection();
+
+      if (currentEntityKey) {
+        const entityRange = getEntityRange(editorState, currentEntityKey);
+        const isBackward = selection.getIsBackward();
+        if (isBackward) {
+          selection = selection.merge({
+            anchorOffset: entityRange.end,
+            focusOffset: entityRange.start,
+          });
+        } else {
+          selection = selection.merge({
+            anchorOffset: entityRange.start,
+            focusOffset: entityRange.end,
+          });
+        }
       }
-    }
-    const entityKey = editorState
-      .getCurrentContent()
-      .createEntity('LINK', 'MUTABLE', {
-        url: linkTarget,
-        targetOption: linkTargetOption,
-      })
-      .getLastCreatedEntityKey();
 
-    let contentState = Modifier.replaceText(
-      editorState.getCurrentContent(),
-      selection,
-      `${linkTitle}`,
-      editorState.getCurrentInlineStyle(),
-      entityKey
-    );
-    let newEditorState = EditorState.push(editorState, contentState, 'insert-characters');
+      const entityKey = editorState
+        .getCurrentContent()
+        .createEntity('LINK', 'MUTABLE', {
+          url: target,
+          targetOption,
+        })
+        .getLastCreatedEntityKey();
 
-    // insert a blank space after link
-    selection = newEditorState.getSelection().merge({
-      anchorOffset: selection.get('anchorOffset') + linkTitle.length,
-      focusOffset: selection.get('anchorOffset') + linkTitle.length,
-    });
-    newEditorState = EditorState.acceptSelection(newEditorState, selection);
-    contentState = Modifier.insertText(
-      newEditorState.getCurrentContent(),
-      selection,
-      ' ',
-      newEditorState.getCurrentInlineStyle(),
-      undefined
-    );
-    onChange(EditorState.push(newEditorState, contentState, 'insert-characters'));
-    this.doCollapse();
-  };
+      let contentState = Modifier.replaceText(
+        editorState.getCurrentContent(),
+        selection,
+        title,
+        editorState.getCurrentInlineStyle(),
+        entityKey
+      );
+      let newEditorState = EditorState.push(editorState, contentState, 'insert-characters');
 
-  render() {
-    const { config, translations } = this.props;
-    const { expanded } = this.state;
-    const { link, selectionText } = this.getCurrentValues();
+      // insert a blank space after link
+      selection = newEditorState.getSelection().merge({
+        anchorOffset: selection.get('anchorOffset') + title.length,
+        focusOffset: selection.get('anchorOffset') + title.length,
+      });
+      newEditorState = EditorState.acceptSelection(newEditorState, selection);
+      contentState = Modifier.insertText(
+        newEditorState.getCurrentContent(),
+        selection,
+        ' ',
+        newEditorState.getCurrentInlineStyle(),
+        undefined
+      );
+      onChange(EditorState.push(newEditorState, contentState, 'insert-characters'));
+      closeModal();
+    },
+    [currentEntityKey, editorState, onChange]
+  );
 
-    return (
-      <LinkComponent
-        config={config}
-        translations={translations}
-        expanded={expanded}
-        onExpandEvent={this.onExpandEvent}
-        doExpand={this.doExpand}
-        doCollapse={this.doCollapse}
-        currentState={{
-          link,
-          selectionText,
+  const referenceElementRef = useRef(null);
+  const popperElementRef = useRef(null);
+
+  const { styles, attributes } = usePopper(referenceElementRef.current, popperElementRef.current, {
+    modifiers: [
+      { name: 'preventOverflow', enabled: false },
+      { name: 'hide', enabled: false },
+    ],
+    placement: 'bottom-start',
+  });
+
+  return (
+    <ToolGroup aria-label="rdw-link-control" ref={referenceElementRef}>
+      <ToolButton
+        onClick={openModal}
+        aria-haspopup="dialog"
+        title={intl.formatMessage({ id: 'wysiwygEditor.link.link' })}
+      >
+        <img src={linkIcon} alt="" />
+      </ToolButton>
+
+      <ToolButton
+        disabled={!link}
+        onClick={removeLink}
+        title={intl.formatMessage({ id: 'wysiwygEditor.link.unlink' })}
+      >
+        <img src={unlinkIcon} alt="" />
+      </ToolButton>
+
+      <AddLinkModal
+        ref={popperElementRef}
+        style={styles.popper}
+        {...attributes.popper}
+        isOpen={showModal}
+        onSubmit={addLink}
+        onCancel={closeModal}
+        initialValues={{
+          title: link?.title || selectionText || '',
+          target: link?.target || '',
+          openInNewWindow: link?.targetOption === '_blank',
         }}
-        onChange={this.onChange}
       />
-    );
-  }
+    </ToolGroup>
+  );
 }
-
-export default Link;
-
-// todo refct
-// 1. better action names here
-// 2. align update signatue
-// 3. align current value signature

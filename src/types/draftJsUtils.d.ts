@@ -32,11 +32,15 @@ declare module 'draftjs-utils' {
     editorState: EditorState
   ): Map<string, string | undefined>;
   export function blockRenderMap(): Map;
-  export function getSelectionEntity(editorState: EditorState): Entity;
+  export function getSelectionEntity(editorState: EditorState): string | undefined;
   export function getEntityRange(
     editorState: EditorState,
     entityKey: string
-  ): Record<string, unknown>;
+  ): {
+    start: number | undefined;
+    end: number | undefined;
+    text: string;
+  };
   export function handleNewLine(editorState: EditorState): EditorState | Event;
   export function isListBlock(constentBlock: ContentBlock): boolean;
   export function changeDepth(editorState: EditorState, adjustment, maxDepth): EditorState;

@@ -1,9 +1,12 @@
 import React, { useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
+import { ThemeProvider } from 'styled-components';
+import { Normalize } from 'styled-normalize';
 
 import Editor from './Editor';
 import messages from './i18n';
+import { defaultTheme } from './themes';
 
 interface Messages {
   [key: string]: string | Messages;
@@ -31,7 +34,11 @@ const App: React.FC = () => {
 
   return (
     <IntlProvider defaultLocale="en-GB" locale="en-GB" messages={languageSpecificMessages}>
-      <Editor />
+      <ThemeProvider theme={defaultTheme}>
+        <Normalize />
+
+        <Editor />
+      </ThemeProvider>
     </IntlProvider>
   );
 };

@@ -1,8 +1,4 @@
 export default {
-  // Generic
-  'generic.add': 'Add',
-  'generic.cancel': 'Cancel',
-
   // BlockType
   'components.controls.blocktype.h1': 'H1',
   'components.controls.blocktype.h2': 'H2',
@@ -35,6 +31,10 @@ export default {
   'components.controls.fontsize.fontsize': 'Font Size',
 
   wysiwygEditor: {
+    generic: {
+      add: `Add`,
+      cancel: `Cancel`,
+    },
     inline: {
       bold: `Bold`,
       italic: `Italic`,
@@ -56,6 +56,13 @@ export default {
       indent: `Indent`,
       outdent: `Outdent`,
     },
+    link: {
+      linkTitle: `Link Title`,
+      linkTarget: `Link Target`,
+      openInNewWindow: `Open link in new window`,
+      link: `Link`,
+      unlink: `Unlink`,
+    },
     history: {
       undo: `Undo`,
       redo: `Redo`,
@@ -68,11 +75,4 @@ export default {
   'components.controls.image.fileUpload': 'File Upload',
   'components.controls.image.byURL': 'URL',
   'components.controls.image.dropFileText': 'Drop the file or click to upload',
-
-  // Link
-  'components.controls.link.linkTitle': 'Link Title',
-  'components.controls.link.linkTarget': 'Link Target',
-  'components.controls.link.linkTargetOption': 'Open link in new window',
-  'components.controls.link.link': 'Link',
-  'components.controls.link.unlink': 'Unlink',
 };

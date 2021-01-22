@@ -1,5 +1,3 @@
-import './styles.css';
-
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { EditorState } from 'draft-js';
@@ -9,7 +7,8 @@ import centerIcon from '../../../images/align-center.svg';
 import justifyIcon from '../../../images/align-justify.svg';
 import leftIcon from '../../../images/align-left.svg';
 import rightIcon from '../../../images/align-right.svg';
-import Option from '../../components/Option';
+import { ToolButton } from '../common/ToolButton';
+import { ToolGroup } from '../common/ToolGroup';
 
 enum TextAlignment {
   Left = 'left',
@@ -40,42 +39,38 @@ export default function TextAlign({ onChange, editorState }: Props) {
   };
 
   return (
-    <div className="rdw-text-align-wrapper" aria-label="rdw-textalign-control">
-      <Option
-        value={TextAlignment.Left}
-        active={currentTextAlignment === TextAlignment.Left}
-        onClick={addBlockAlignmentData}
+    <ToolGroup aria-label="rdw-textalign-control">
+      <ToolButton
+        aria-pressed={currentTextAlignment === TextAlignment.Left}
+        onClick={() => addBlockAlignmentData(TextAlignment.Left)}
         title={intl.formatMessage({ id: 'wysiwygEditor.textalign.left' })}
       >
         <img src={leftIcon} alt="" />
-      </Option>
+      </ToolButton>
 
-      <Option
-        value={TextAlignment.Center}
-        active={currentTextAlignment === TextAlignment.Center}
-        onClick={addBlockAlignmentData}
+      <ToolButton
+        aria-pressed={currentTextAlignment === TextAlignment.Center}
+        onClick={() => addBlockAlignmentData(TextAlignment.Center)}
         title={intl.formatMessage({ id: 'wysiwygEditor.textalign.center' })}
       >
         <img src={centerIcon} alt="" />
-      </Option>
+      </ToolButton>
 
-      <Option
-        value={TextAlignment.Right}
-        active={currentTextAlignment === TextAlignment.Right}
-        onClick={addBlockAlignmentData}
+      <ToolButton
+        aria-pressed={currentTextAlignment === TextAlignment.Right}
+        onClick={() => addBlockAlignmentData(TextAlignment.Right)}
         title={intl.formatMessage({ id: 'wysiwygEditor.textalign.right' })}
       >
         <img src={rightIcon} alt="" />
-      </Option>
+      </ToolButton>
 
-      <Option
-        value={TextAlignment.Justify}
-        active={currentTextAlignment === TextAlignment.Justify}
-        onClick={addBlockAlignmentData}
+      <ToolButton
+        aria-pressed={currentTextAlignment === TextAlignment.Justify}
+        onClick={() => addBlockAlignmentData(TextAlignment.Justify)}
         title={intl.formatMessage({ id: 'wysiwygEditor.textalign.justify' })}
       >
         <img src={justifyIcon} alt="" />
-      </Option>
-    </div>
+      </ToolButton>
+    </ToolGroup>
   );
 }

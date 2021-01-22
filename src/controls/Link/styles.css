@@ -1,36 +1,3 @@
-.rdw-link-wrapper {
-  display: flex;
-  align-items: center;
-  margin-bottom: 6px;
-  position: relative;
-  flex-wrap: wrap;
-}
-.rdw-link-dropdown {
-  width: 50px;
-}
-.rdw-link-dropdownOption {
-  height: 40px;
-  display: flex;
-  justify-content: center;
-}
-.rdw-link-dropdownPlaceholder {
-  margin-left: 8px;
-}
-.rdw-link-modal {
-  position: absolute;
-  top: 35px;
-  left: 5px;
-  display: flex;
-  flex-direction: column;
-  width: 235px;
-  height: 205px;
-  border: 1px solid #f1f1f1;
-  padding: 15px;
-  border-radius: 2px;
-  z-index: 100;
-  background: white;
-  box-shadow: 3px 3px 5px #bfbdbd;
-}
 .rdw-link-modal-label {
   font-size: 15px;
 }
@@ -75,12 +42,4 @@
 }
 .rdw-link-modal-btn:disabled {
   background: #ece9e9;
-}
-.rdw-link-dropdownoption {
-  height: 40px;
-  display: flex;
-  justify-content: center;
-}
-.rdw-history-dropdown {
-  width: 50px;
 }

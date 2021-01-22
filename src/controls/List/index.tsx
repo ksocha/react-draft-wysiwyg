@@ -1,5 +1,3 @@
-import './styles.css';
-
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { EditorState, RichUtils } from 'draft-js';
@@ -14,7 +12,8 @@ import indentIcon from '../../../images/indent.svg';
 import orderedIcon from '../../../images/list-ordered.svg';
 import unorderedIcon from '../../../images/list-unordered.svg';
 import outdentIcon from '../../../images/outdent.svg';
-import Option from '../../components/Option';
+import { ToolButton } from '../common/ToolButton';
+import { ToolGroup } from '../common/ToolGroup';
 
 enum ListType {
   Ordered = 'ordered-list-item',
@@ -68,42 +67,38 @@ export default function List({ onChange, editorState }: Props) {
   };
 
   return (
-    <div className="rdw-list-wrapper" aria-label="rdw-list-control">
-      <Option
-        value={ListType.Unordered}
-        onClick={handleListTypeChanged}
-        active={currentListType === ListType.Unordered}
+    <ToolGroup aria-label="rdw-list-control">
+      <ToolButton
+        aria-pressed={currentListType === ListType.Unordered}
+        onClick={() => handleListTypeChanged(ListType.Unordered)}
         title={intl.formatMessage({ id: 'wysiwygEditor.list.unordered' })}
       >
         <img src={unorderedIcon} alt="" />
-      </Option>
+      </ToolButton>
 
-      <Option
-        value={ListType.Ordered}
-        onClick={handleListTypeChanged}
-        active={currentListType === ListType.Ordered}
+      <ToolButton
+        aria-pressed={currentListType === ListType.Ordered}
+        onClick={() => handleListTypeChanged(ListType.Ordered)}
         title={intl.formatMessage({ id: 'wysiwygEditor.list.ordered' })}
       >
         <img src={orderedIcon} alt="" />
-      </Option>
+      </ToolButton>
 
-      <Option
-        value={IndentationChange.Indent}
-        onClick={handleIndentationChange}
+      <ToolButton
         disabled={indentDisabled}
+        onClick={() => handleIndentationChange(IndentationChange.Indent)}
         title={intl.formatMessage({ id: 'wysiwygEditor.list.indent' })}
       >
         <img src={indentIcon} alt="" />
-      </Option>
+      </ToolButton>
 
-      <Option
-        value={IndentationChange.Outdent}
-        onClick={handleIndentationChange}
+      <ToolButton
         disabled={outdentDisabled}
+        onClick={() => handleIndentationChange(IndentationChange.Outdent)}
         title={intl.formatMessage({ id: 'wysiwygEditor.list.outdent' })}
       >
         <img src={outdentIcon} alt="" />
-      </Option>
-    </div>
+      </ToolButton>
+    </ToolGroup>
   );
 }

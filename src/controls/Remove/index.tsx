@@ -2,10 +2,11 @@ import React, { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 import { EditorState, Modifier } from 'draft-js';
 import { getSelectionCustomInlineStyle } from 'draftjs-utils';
+import { forEach } from 'lodash';
 
 import eraserIcon from '../../../images/eraser.svg';
-import Option from '../../components/Option';
-import { forEach } from '../../utils/common';
+import { ToolButton } from '../common/ToolButton';
+import { ToolGroup } from '../common/ToolGroup';
 
 interface Props {
   onChange: (editorState: EditorState) => void;
@@ -31,7 +32,7 @@ export default function Remove({ onChange, editorState }: Props) {
       'BGCOLOR',
     ]);
 
-    forEach(customStyles, (key, value) => {
+    forEach(customStyles, value => {
       if (value) {
         contentState = Modifier.removeInlineStyle(contentState, editorState.getSelection(), value);
       }
@@ -43,13 +44,13 @@ export default function Remove({ onChange, editorState }: Props) {
   }, [onChange, editorState]);
 
   return (
-    <div className="rdw-remove-wrapper" aria-label="rdw-remove-control">
-      <Option
+    <ToolGroup aria-label="rdw-remove-control">
+      <ToolButton
         onClick={removeInlineStyles}
         title={intl.formatMessage({ id: 'wysiwygEditor.remove' })}
       >
         <img src={eraserIcon} alt="" />
-      </Option>
-    </div>
+      </ToolButton>
+    </ToolGroup>
   );
 }
