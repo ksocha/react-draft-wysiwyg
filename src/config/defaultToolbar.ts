@@ -30,9 +30,7 @@ import unlink from '../../images/unlink.svg';
 export default {
   options: [
     'inline',
-    'blockType',
     'fontSize',
-    'fontFamily',
     'list',
     'textAlign',
     'colorPicker',
@@ -68,24 +66,9 @@ export default {
     superscript: { icon: superscript, className: undefined, title: undefined },
     subscript: { icon: subscript, className: undefined, title: undefined },
   },
-  blockType: {
-    inDropdown: true,
-    options: ['Normal', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'Blockquote', 'CodeBlock'],
-    className: undefined,
-    component: undefined,
-    dropdownClassName: undefined,
-    title: undefined,
-  },
   fontSize: {
     icon: fontSize,
     options: [8, 9, 10, 11, 12, 14, 16, 18, 24, 30, 36, 48, 60, 72, 96],
-    className: undefined,
-    component: undefined,
-    dropdownClassName: undefined,
-    title: undefined,
-  },
-  fontFamily: {
-    options: ['Arial', 'Georgia', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'],
     className: undefined,
     component: undefined,
     dropdownClassName: undefined,

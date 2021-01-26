@@ -1,95 +1,43 @@
-import React, { Component } from 'react';
+import React, { useMemo } from 'react';
+import { useIntl } from 'react-intl';
+import { EditorState } from 'draft-js';
 import { getSelectionCustomInlineStyle, toggleCustomInlineStyle } from 'draftjs-utils';
-import PropTypes from 'prop-types';
 
-import LayoutComponent from './Component';
+import fontSizeIcon from '../../../images/font-size.svg';
+import { ToolDropdown } from '../common/ToolDropdown';
+import { ToolGroup } from '../common/ToolGroup';
 
-export default class FontSize extends Component {
-  static propTypes = {
-    onChange: PropTypes.func.isRequired,
-    editorState: PropTypes.object,
-    modalHandler: PropTypes.object,
-    config: PropTypes.object,
-    translations: PropTypes.object,
-  };
+const defaultFontSize = 16;
+const options = [8, 9, 10, 11, 12, 14, 16, 18, 24, 30, 36, 48, 60, 72, 96];
 
-  constructor(props) {
-    super(props);
-    const { editorState } = props;
-    this.state = {
-      expanded: undefined,
-      currentFontSize: editorState
-        ? getSelectionCustomInlineStyle(editorState, ['FONTSIZE']).FONTSIZE
-        : undefined,
-    };
-  }
+interface Props {
+  onChange: (editorState: EditorState) => void;
+  editorState: EditorState;
+}
 
-  componentDidMount() {
-    const { modalHandler } = this.props;
-    modalHandler.registerCallBack(this.expandCollapse);
-  }
+export default function FontSize({ onChange, editorState }: Props) {
+  const intl = useIntl();
 
-  componentDidUpdate(prevProps) {
-    const { editorState } = this.props;
-    if (editorState && editorState !== prevProps.editorState) {
-      this.setState({
-        currentFontSize: getSelectionCustomInlineStyle(editorState, ['FONTSIZE']).FONTSIZE,
-      });
-    }
-  }
+  const currentFontSize = useMemo(() => {
+    const currentSize = getSelectionCustomInlineStyle(editorState, ['FONTSIZE']).FONTSIZE;
+    const parsedSize = currentSize && Number(currentSize.substring(9));
 
-  componentWillUnmount() {
-    const { modalHandler } = this.props;
-    modalHandler.deregisterCallBack(this.expandCollapse);
-  }
+    return parsedSize || defaultFontSize;
+  }, [editorState]);
 
-  onExpandEvent = () => {
-    this.signalExpanded = !this.state.expanded;
-  };
-
-  expandCollapse = () => {
-    this.setState({
-      expanded: this.signalExpanded,
-    });
-    this.signalExpanded = false;
-  };
-
-  doExpand = () => {
-    this.setState({
-      expanded: true,
-    });
-  };
-
-  doCollapse = () => {
-    this.setState({
-      expanded: false,
-    });
-  };
-
-  toggleFontSize = fontSize => {
-    const { editorState, onChange } = this.props;
-    const newState = toggleCustomInlineStyle(editorState, 'fontSize', fontSize);
-    if (newState) {
-      onChange(newState);
-    }
-  };
-
-  render() {
-    const { config, translations } = this.props;
-    const { expanded, currentFontSize } = this.state;
-    const FontSizeComponent = config.component || LayoutComponent;
-    const fontSize = currentFontSize && Number(currentFontSize.substring(9));
-    return (
-      <FontSizeComponent
-        config={config}
-        translations={translations}
-        currentState={{ fontSize }}
-        onChange={this.toggleFontSize}
-        expanded={expanded}
-        onExpandEvent={this.onExpandEvent}
-        doExpand={this.doExpand}
-        doCollapse={this.doCollapse}
+  return (
+    <ToolGroup aria-label="rdw-font-size-control">
+      <ToolDropdown
+        options={options.map(val => ({ label: val, value: val }))}
+        onChange={selectedValue => {
+          if (selectedValue) {
+            onChange(toggleCustomInlineStyle(editorState, 'fontSize', String(selectedValue)));
+          }
+        }}
+        value={currentFontSize}
+        icon={<img src={fontSizeIcon} alt="" />}
+        title={intl.formatMessage({ id: 'wysiwygEditor.fontSize.title' })}
       />
-    );
-  }
+    </ToolGroup>
+  );
 }

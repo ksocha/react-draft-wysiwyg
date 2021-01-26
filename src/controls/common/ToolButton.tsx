@@ -15,6 +15,7 @@ export const ToolButton = styled.button.attrs({
   cursor: pointer;
   background: white;
   text-transform: capitalize;
+  outline: none;
 
   &:hover {
     box-shadow: 1px 1px 0px #bfbdbd;

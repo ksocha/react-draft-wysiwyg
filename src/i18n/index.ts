@@ -1,31 +1,16 @@
 export default {
-  // BlockType
-  'components.controls.blocktype.h1': 'H1',
-  'components.controls.blocktype.h2': 'H2',
-  'components.controls.blocktype.h3': 'H3',
-  'components.controls.blocktype.h4': 'H4',
-  'components.controls.blocktype.h5': 'H5',
-  'components.controls.blocktype.h6': 'H6',
-  'components.controls.blocktype.blockquote': 'Blockquote',
-  'components.controls.blocktype.code': 'Code',
-  'components.controls.blocktype.blocktype': 'Block Type',
-  'components.controls.blocktype.normal': 'Normal',
-
   // Color Picker
   'components.controls.colorpicker.colorpicker': 'Color Picker',
   'components.controls.colorpicker.text': 'Text',
   'components.controls.colorpicker.background': 'Highlight',
 
-  // FontFamily
-  'components.controls.fontfamily.fontfamily': 'Font',
-
-  // FontSize
-  'components.controls.fontsize.fontsize': 'Font Size',
-
   wysiwygEditor: {
     generic: {
       add: `Add`,
       cancel: `Cancel`,
+    },
+    fontsize: {
+      title: `Font Size`,
     },
     inline: {
       bold: `Bold`,

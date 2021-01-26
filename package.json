@@ -30,6 +30,7 @@
     "classnames": "^2.2.6",
     "cross-env": "^6.0.3",
     "css-loader": "^3.2.1",
+    "downshift": "^6.1.0",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
     "draftjs-to-markdown": "^0.6.0",
